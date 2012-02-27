@@ -1,4 +1,5 @@
-Installed programs with npm:
+Installed addons with npm:
 	socket.io
-	formidable
+	formidable// migglu: do we really need this?
 	db-mysql
+	node-static
