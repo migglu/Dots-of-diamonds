@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Dots of Diamonds - Register</title>
+		<link rel="stylesheet" href="resources/style.css" />
+		<script src="/resources/script.js"></script>
+		<script src="/resources/md5.js"></script>
+	</head>
+	
+	<body>
+		<header>
+		</header>
+		
+		<article>
+			
+			<div class="reg_cont">
+				<form method="GET" action="/register" id="register" onSubmit="hash(this)">
+					
+					<input type="text" name="reg[user]" id="user" required placeholder="Username" ="" /> <br />
+					<div class="clear" ></div>
+					<input type="email" name="reg[mail]" id="mail" required placeholder="Email" /> <br />
+					<div class="clear" ></div>
+					<input type="password" name="reg[pass]" id="pass" required placeholder="Password" /> <br />
+					<div class="clear" ></div>
+					
+					<input type="submit" name="submit" id="submit" value="Register" />
+				</form>
+			</div>
+		</article>
+		
+		<footer>
+		</footer>
+	</body>
+
+</html>
