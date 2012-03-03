@@ -11,10 +11,11 @@ function serve(response, request)
 
 function serveFile(filename, response, request)
 {
-	console.log("About to serve static " + filename);
-	request.addListener('end', function () {
-		files.serveFile(filename, 500, {}, request, response);
-	});
+	console.log("About to serve file " + filename);
+	//request.addListener('end', function () {
+		files.serveFile(filename, 200, {}, request, response);
+		//response.end();
+	//});
 }
 
 exports.serve = serve;

@@ -14,17 +14,23 @@
 		
 		<article>
 			
+			<div class="login">
+				<form method="GET" action="/login" id="log" onSubmit="hash(this)">
+					
+					<input type="text" name="reg[user]" id="user" required placeholder="Username" /> <br />
+					<input type="password" name="reg[pass]" id="pass" required placeholder="Password" /> <br />
+					<input type="submit" name="submit" class="submit" value="Sign in" />
+				</form>
+			</div>
+			
 			<div class="reg_cont">
 				<form method="GET" action="/register" id="register" onSubmit="hash(this)">
 					
-					<input type="text" name="reg[user]" id="user" required placeholder="Username" ="" /> <br />
-					<div class="clear" ></div>
+					<input type="text" name="reg[user]" id="user" required placeholder="Username" /> <br />
 					<input type="email" name="reg[mail]" id="mail" required placeholder="Email" /> <br />
-					<div class="clear" ></div>
 					<input type="password" name="reg[pass]" id="pass" required placeholder="Password" /> <br />
-					<div class="clear" ></div>
 					
-					<input type="submit" name="submit" id="submit" value="Register" />
+					<input type="submit" name="submit" class="submit" value="Register" />
 				</form>
 			</div>
 		</article>

@@ -1,6 +1,9 @@
 
 function hash(element)
 {
-	var pass = document.forms["register"].pass.value
-	document.forms["register"].pass.value = hex_md5(pass);
+	var pass = element.pass.value
+	if(pass != '')
+	{
+		element.pass.value = hex_md5(pass);
+	}
 }
