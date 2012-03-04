@@ -1,5 +1,12 @@
 //funkciq da iz4ertava cqloto pole
 
+//function field(){
+//	var c=document.getElementById("myCanvas");
+//	var bo=c.getContext("2d");
+//	ctx.fillStyle="#000000";
+//	ctx.line(10,10,0,15);
+//}
+
 function init(canvasname);
 
 function classname()
