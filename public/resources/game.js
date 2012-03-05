@@ -1,13 +1,15 @@
 //funkciq da iz4ertava cqloto pole
 
-//function field(){
-//	var c=document.getElementById("myCanvas");
-//	var bo=c.getContext("2d");
-//	ctx.fillStyle="#000000";
-//	ctx.line(10,10,0,15);
-//}
+function field(){
+	var c=document.getElementById("dots_game");
+	var bo=c.getContext("2d");
+	bo.fillStyle="#000000";
+	bo.moveTo(20,20);
+	bo.lineTo(0,40);
+	bo.stroke();
+}
 
-function init(canvasname);
+function init(canvasname){}
 
 function classname()
 {
