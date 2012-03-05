@@ -14,7 +14,7 @@ aricle
 	margin: 0 auto;
 }
 
-.reg_cont input
+input
 {
 	font-family: Arial;
 	font-size: 1em;
@@ -30,19 +30,19 @@ aricle
 	margin-bottom: 8px;
 }
 
-.reg_cont input:last-child
+input:last-child
 {
 	margin-bottom: 0;
 }
 
-.reg_cont input#submit
+input.submit
 {
 	height: 30px;
 	width: 213px;
 	background-color: rgba(0, 0, 150, 0.2 );
 }
 
-.reg_cont input:hover
+input:hover
 {
 	box-shadow: 0px 0px 5px rgba(74, 203, 162, 0.3);
 }

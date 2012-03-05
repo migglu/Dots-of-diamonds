@@ -2,7 +2,12 @@ var querystring = require("querystring");
 var fs = require("fs");
 var formidable = require("formidable");
 var statics = require("./statics");
-var registerHandler = require("./register");
+var user = require("./user");
+
+function login(response, request)
+{
+	user.login(response, request);
+}
 
 function serveIndex(response, request)
 {
@@ -11,7 +16,7 @@ function serveIndex(response, request)
 
 function register(response, request)
 {
-	registerHandler.reg(response, request);
+	user.register(response, request);
 }
 
 function upload(response, request)
@@ -56,6 +61,7 @@ function show(response) {
 	});
 }
 
+exports.login = login;
 exports.register = register;
 exports.upload = upload;
 exports.show = show;

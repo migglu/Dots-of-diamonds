@@ -9,5 +9,6 @@ handle['/index'] = requestHandlers.serveIndex;
 handle['/upload'] = requestHandlers.upload;
 handle['/show'] = requestHandlers.show;
 handle['/register'] = requestHandlers.register;
+handle['/login'] = requestHandlers.login;
 
 server.start(router.route, handle);
