@@ -1,6 +1,5 @@
-//funkciq da iz4ertava cqloto pole
-
-function field(){
+//funkciq da iz4ertava igralnoto pole
+function field(size,type){
 	var c=document.getElementById("dots_game");
 	var bo=c.getContext("2d");
 	bo.fillStyle="#000000";
@@ -8,19 +7,6 @@ function field(){
 	bo.lineTo(0,40);
 	bo.stroke();
 }
-
-function init(canvasname){}
-
-function classname()
-{
-	this.jh = 4;
-	function getGornoto(){
-		return this.jh;
-	}
-}
-
-var jh = new classname();
-
 
 //funkciq da chertae cherti
 //funkciq da zapulva rombche
