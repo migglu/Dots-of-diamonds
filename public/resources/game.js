@@ -1,6 +1,6 @@
-var x=0;var y=0;var z=0;var l=0;var i=0;var j=0;var h=0;var w=0;var d=0;
+var x=0;var y=0;var z=0;var l=0;var i=0;var j=0;var h=0;var w=0;var d=0;var a=0;var b=0;var c=0;
 
-//funkciqta iz4ertava igralnoto pole
+//iz4ertavane ne igralnoto pole
 function field(size,type){
 	var c=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
@@ -10,30 +10,29 @@ function field(size,type){
 	switch(size){
 	case 1:{z=6;
 		whl(z,width,height);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
+		y=h;
+		for(i=0;i<(z/2);i++){
+			drawRow(z,l,h,w,x,y,bo);
+			y+=2*l+2*h;
+		}
 	break;	
 	}
 	case 2:{z=10;
 		whl(z,width,height);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
+		y=h;
+		for(i=0;i<(z/2);i++){
+			drawRow(z,l,h,w,x,y,bo);
+			y+=2*l+2*h;
+		}
 	break;
 	}
 	case 3:{z=16;
 		whl(z,width,height);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
-		drawRow(z,l,h,w,x,y,bo);
+		y=h;
+		for(i=0;i<(z/2);i++){
+			drawRow(z,l,h,w,x,y,bo);
+			y+=2*l+2*h;
+		}
 	break;
 	}
 	}			
@@ -51,14 +50,18 @@ function whl(z,width,height){
 		w=Math.round(w);
 	}
 	
-	d=(2*height*(z+1))*(2*height*(z+1)) - 4*(1-2*z)*(height*height-z*z*w*w);
+	a=(2*z+1);
+	b=(-(2*height+2*z*height));
+	c=(height*height-w*w*z*z)
 	
-	h=(-2*height*(z+1)-Math.sqrt(d))/(2*(1-2*z));
-	if((-(2*height*(z+1))-Math.sqrt(d))/(2*(1-2*z))==0){}
-	else if((-(2*height*(z+1))-Math.sqrt(d))/(2*(z*z-(z+1)*(z+1)))>=(2*(1-2*z))/2){
+	d=b*b - 4*a*c;
+	
+	h=(-b-Math.sqrt(d))/(2*a);
+	if((-b-Math.sqrt(d))/(2*a)==0){}
+	else if((-b-Math.sqrt(d))/(2*a)>=(2*a)/2){
 		h=Math.round(h)-1;
 	}
-	else if((-(2*height*(z+1))-Math.sqrt(d))/(2*(z*z-(z+1)*(z+1)))<(2*(1-2*z))/2){
+	else if((-b-Math.sqrt(d))/(2*a)<(2*a)/2){
 		h=Math.round(h);
 	}
 	
@@ -75,7 +78,6 @@ function whl(z,width,height){
 
 function drawRow(z,l,h,w,x,y,bo){
 	x=0;
-	y+=h;
 	bo.moveTo(x,y);
 	I(z,l,h,w,x,y,bo);
 	y+=l;
@@ -121,6 +123,11 @@ function III(z,l,h,w,x,y,bo){
 		bo.lineTo(x,y);
 	}
 }
+//krai na izchertavaneto na igralnoto pole
+
+
+
+
 
 //funkciq da chertae cherti
 //funkciq da zapulva rombche
