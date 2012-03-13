@@ -4,6 +4,13 @@ var formidable = require("formidable");
 var statics = require("./statics");
 var user = require("./user");
 
+function chat(response, request)
+{
+	//authentication?
+	console.log("ABOUT TO SERVE chat");
+	statics.serveFile('/chat.html', response, request);
+}
+
 function login(response, request)
 {
 	user.login(response, request);
@@ -66,3 +73,4 @@ exports.register = register;
 exports.upload = upload;
 exports.show = show;
 exports.serveIndex = serveIndex;
+exports.chat = chat;

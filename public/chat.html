@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dots of Diamods - Chat</title>
+		<script src="/resources/cookies.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/resources/authenticate.js"></script>
+		<script src="/resources/chat.js"></script>
+	</head>
+	
+	<body>
+		<input type="text" id="message" ></input>
+		<input type="button" value="send" onclick="emit(document.getElementById('message'));"></input>
+		<div id="status"></div>
+		<div id="chat">The chat..</div>
+
+	</body>
+</html>

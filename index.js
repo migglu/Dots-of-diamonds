@@ -10,5 +10,6 @@ handle['/upload'] = requestHandlers.upload;
 handle['/show'] = requestHandlers.show;
 handle['/register'] = requestHandlers.register;
 handle['/login'] = requestHandlers.login;
+handle['/chat'] = requestHandlers.chat;
 
 server.start(router.route, handle);
