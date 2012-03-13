@@ -52,6 +52,13 @@ input:hover
 	clear: both;
 }
 
+#chat
+{
+	width: 500px;
+	height: 400px;
+	overflow: auto;
+}
+
 .reg_cont .clear
 {
 }

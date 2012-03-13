@@ -1,4 +1,4 @@
-var login = io.connect('http://localhost:3000/login');
+var login = io.connect('http://130.204.179.226:3000/login');
 
 login.on('login', function (data) {
 	//console.log(data);

@@ -68,7 +68,7 @@ function show(response) {
 	});
 }
 
-exports.login = login;
+//exports.login = login;
 exports.register = register;
 exports.upload = upload;
 exports.show = show;
