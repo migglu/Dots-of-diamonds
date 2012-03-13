@@ -1,7 +1,15 @@
 var x=0;var y=0;var z=0;var l=0;var i=0;var j=0;var h=0;var w=0;var d=0;var a=0;var b=0;var c=0;
 
+function clearField() {
+	var canvas = document.getElementById("dots_game");
+	canvas.width = canvas.width;
+}	
+
 //iz4ertavane ne igralnoto pole
 function field(size,type){
+	
+	clearField();
+	
 	var c=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
