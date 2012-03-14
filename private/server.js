@@ -1,5 +1,6 @@
 var http = require("http");
 var url = require("url");
+var io = require("./socket");
 
 function start(route, handle) {
 	function onRequest(request, response) {
@@ -9,7 +10,10 @@ function start(route, handle) {
 		route(handle, pathname, response, request);
 	}
 	
-	http.createServer(onRequest).listen(3000);
+	var server = http.createServer(onRequest);
+	io.connect(server);
+	
+	server.listen(3000);
 	
 	console.log("Server has started");
 }

@@ -25,7 +25,7 @@ function checkLoginQuery(user, pass, response, request, callback)
 		console.log("Trying to login falsely.. exiting!");
 		return;
 	}
-	console.log("Calling the database function :)");
+	console.log("Calling the database function");
 	callback(user, pass, response, request);
 }
 
@@ -56,4 +56,4 @@ function login(response, request)
 }
 
 exports.register = reg;
-exports.login = login;
+//exports.login = login;
