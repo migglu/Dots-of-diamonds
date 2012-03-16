@@ -6,7 +6,7 @@
 		<link rel="stylesheet" href="resources/style.css" />
 		<script src="/resources/md5.js"></script>
 		<script src="/resources/cookies.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
+		<script src="socket.io/socket.io.js"></script>
 		<script src="/resources/login.js"></script>
 		<script src="/resources/script.js"></script>
 	</head>
@@ -18,7 +18,7 @@
 		<article>
 			
 			<div class="login">
-				<form method="GET" action="/login" id="log" onSubmit="send(document.getElementById('log')); return false">
+				<form method="GET" action="/login" id="log" onSubmit="send(document.getElementById('log')); return false;;">
 					
 					<input type="text" name="reg[user]" id="user" required placeholder="Username" /> <br />
 					<input type="password" name="reg[pass]" id="pass" required placeholder="Password" /> <br />

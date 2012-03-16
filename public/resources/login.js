@@ -1,4 +1,7 @@
-var login = io.connect('http://130.204.179.226:3000/login');
+var loginName = 'http://' + window.location.host + '/login';
+
+console.log(loginName);
+var login = io.connect(loginName);
 
 login.on('login', function (data) {
 	//console.log(data);
@@ -6,7 +9,7 @@ login.on('login', function (data) {
 	setCookie("Dots-of-Diamonds", data.token);
 	//console.log(getCookie("Dots-of-Diamonds"));
 	
-	window.location = "/chat";
+	window.location = '/chat';
 });
 
 function send(form)
@@ -15,6 +18,4 @@ function send(form)
 	var name = form.user.value;
 	pass = hex_md5(pass);
 	login.emit('login', {'pass': pass, 'user': name});
-	window.stop();
-	return false;
 }

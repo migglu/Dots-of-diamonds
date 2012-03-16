@@ -1,4 +1,6 @@
-var chat = io.connect('http://130.204.179.226:3000/chat');
+var chatName = 'http://' + window.location.host + '/chat';
+
+var chat = io.connect(chatName);
 
 chat.on('connect', function () {
 	var token = getCookie("Dots-of-Diamonds");
