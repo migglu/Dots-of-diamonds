@@ -114,7 +114,39 @@ function III(z,l,h,w,x,y,bo,i){
 }
 //krai na izchertavaneto na igralnoto pole
 
+var ratx=0,raty=0;
+
+function hex(){
+	this.line1=false;
+	this.line2=false;
+	this.line3=false;
+	this.line4=false;
+	this.line5=false;
+	this.line6=false;
+}
+
+function fieldArray(){
+	var hexfield=new Array(z);
+	for(i=0;i<z;i++){
+		hexfield[i]=new Array(z);
+		for(j=0;j<z;j++){
+			hexfield[i][j]=new hex();
+		}
+	}
+}
+
 //funkciq da chertae cherti
+function drawLine(){
+	var g=document.getElementById("dots_game");
+	var width=document.getElementById("dots_game").width;
+	var height=document.getElementById("dots_game").height;
+	var bo=g.getContext("2d");
+	bo.fillStyle="#000000";
+
+
+	bo.stroke();
+}
+
 //funkciq da zapulva rombche
 
 //AI
