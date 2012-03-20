@@ -9,13 +9,7 @@ var statics = require('./statics');
 var crypto = require('crypto');
 
 
-//console.log(server);
-var io = require('./socket');
-//var socket;
-
-//io.sockets.on('connection', function(soc){
-//	socket = soc;
-//});
+var io = require('./socket')
 
 
 function checkUser(user, mail, pass, response, request)
@@ -120,10 +114,8 @@ function loginSocket(user, pass, socket)
 						socket.emit('login', {"token": token});
 					});
 				});
-				
 			});
 		});
-		
 	});
 	
 }
@@ -180,6 +172,7 @@ function login(user, pass, response, request)
 					response.end();
 					socket.emit('login',
 					{"token": token, "date": new Date().toString()});
+					//дрънннннн
 				});
 				
 			});

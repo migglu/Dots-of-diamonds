@@ -1,8 +1,15 @@
+var token = getCookie("Dots-of-Diamonds");
+
 function emit(field)
 {
-	var token = getCookie("Dots-of-Diamonds");
 	chat.emit('publicMessage', {"msg":field.value, "token": token});
 	field.value = '';
+}
+
+function logout()
+{
+	chat.emit('logout', {"token": token});
+	window.location = '/index';
 }
 
 chat.on('publicMessage', function (data) {

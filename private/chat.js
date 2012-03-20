@@ -23,8 +23,28 @@ function setGlobalMessage(socket)
 			}
 		});
 	});
+	
+	socket.on('logout', function(msg) {
+		socket.get('token', function (err, data) {
+			if(err)
+			{
+				console.log("logout error..");
+				return;
+			}
+			
+			if(data == msg.token)
+			{
+				logout(data);
+			}
+		});
+	});
 }
 
+
+function logout(token) {
+	delete loggedIn[token];
+	console.log(loggedIn);
+}
 
 function setLoggedIn(name, token, socket)
 {
@@ -32,7 +52,6 @@ function setLoggedIn(name, token, socket)
 	socket.set('token', token, function() {
 		console.log(loggedIn);
 		setGlobalMessage(socket);
-		
 	});
 }
 
