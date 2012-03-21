@@ -10,6 +10,8 @@ function logout()
 {
 	chat.emit('logout', {"token": token});
 	window.location = '/index';
+	deleteCookie("Dots-of-Diamonds");
+	console.log(document.cookie);
 }
 
 chat.on('publicMessage', function (data) {
