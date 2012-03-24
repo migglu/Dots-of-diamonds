@@ -2,9 +2,14 @@ var io;
 var db = require('./database');
 var chat = require('./chat');
 
-function broadcast(message)
+function broadcastLoggedIn(loggedIn) {
+	io.of('/chat').emit('loggedList', loggedIn);
+}
+
+function broadcastToChat(message)
 {
-	io.of('/chat').emit('publicMessage', message); // TODO: custon broadcast, only to logged in users
+	//console.log(io.of('/chat'));
+	io.of('/chat').volatile.emit('publicMessage', message); // TODO: custom broadcast, only to logged in users
 }
 
 function connect(server)
@@ -14,28 +19,22 @@ function connect(server)
 	setupChat();
 }
 
-
-
 function setupLogin()
 {
-	io
-	.of('/login')
-	.on('connection', function(socket) {
+	io.of('/login').on('connection', function(socket) {
 		socket.on('login', function (data) {
 			var user = data.user;
 			var pass = data.pass;
 			console.log("User = " + user);
 			console.log("Pass = " + pass);
-			db.loginSocket(user, pass, socket);
+			db.loginSocket(user, pass, socket, chat.logout);
 		});
 	});
 }
 
 function setupChat()
 {
-	io
-	.of('/chat')
-	.on('connection', function (socket) {
+	io.of('/chat').on('connection', function (socket) {
 		socket.on('auth', function (token) {
 			console.log('token.token = ' + token.token);
 			
@@ -49,5 +48,5 @@ function setupChat()
 
 
 exports.connect = connect;
-exports.broadcast = broadcast;
-//exports.getSocket = getSocket;
+exports.broadcastToChat = broadcastToChat;
+exports.broadcastLoggedIn = broadcastLoggedIn;

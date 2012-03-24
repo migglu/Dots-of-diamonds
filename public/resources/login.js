@@ -1,7 +1,6 @@
-var loginName = 'http://' + window.location.host + '/login';
+var loginURL = 'http://' + window.location.host + '/login';
 
-console.log(loginName);
-var login = io.connect(loginName);
+var login = io.connect(loginURL);
 
 login.on('login', function (data) {
 	//console.log(data);

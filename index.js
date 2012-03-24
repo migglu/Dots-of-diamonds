@@ -3,6 +3,12 @@ var router = require("./private/router");
 var requestHandlers = require("./private/requestHandlers");
 var statics = require("./private/statics");
 
+function reset() {
+	var db = require('./private/database');
+	db.resetLoggedIn();
+}
+reset();
+
 var handle = {};
 handle['/'] = requestHandlers.serveIndex;
 handle['/index'] = requestHandlers.serveIndex;

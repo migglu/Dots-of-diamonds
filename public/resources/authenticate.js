@@ -8,5 +8,6 @@ chat.on('connect', function () {
 	if(token != undefined)
 	{
 		chat.emit('auth', {"token": token});
+		addChatListeners();
 	}
 });
