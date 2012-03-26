@@ -30,7 +30,10 @@ function setGlobalMessageListener(socket)
 						console.log("UNAUTHORIZED MESSAGE : " + msg.msg);
 						socket.on('publicMessage', function() {});
 					} else {
-						io.broadcastToChat({"msg": msg.msg, "user": loggedIn[msg.token]});
+						if(msg.msg.trim() != '')
+						{
+							io.broadcastToChat({"msg": msg.msg, "user": loggedIn[msg.token]});
+						}
 					}
 				//~ }
 			//~ }

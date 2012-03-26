@@ -10,12 +10,16 @@
 	</head>
 	
 	<body>
-		Status: <div id="status">Maybe online</div>
-		<input type="button" id="logout" value="Logout" onclick="logout();" ></input>
-		<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
-		<input type="button" value="send" onclick="emit(document.getElementById('message'));" ></input>
-		<div id="chat" ></div>
-		<div id="users" ></div>
+		<div id="wrapper">
+			Status: <div id="status">Maybe online</div>
+			<div id="chat" ></div>
+			<div id="users" ></div>
+			<div id="chatControls">
+				<input type="button" id="logout" value="Logout" onclick="logout();" ></input>
+				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
+				<input type="button" value="send" onclick="emit(document.getElementById('message'));" ></input>
+			</div>
+		</div>
 
 	</body>
 </html>

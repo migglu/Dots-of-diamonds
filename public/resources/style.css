@@ -57,8 +57,32 @@ input:hover
 	width: 500px;
 	height: 400px;
 	overflow: auto;
+	float: left;
+	background-color: #eee;
+	border-radius: 7px;
+	margin: 10px;
+	padding: 10px;
 }
 
+#users
+{
+	float: left;
+	background-color: #eee;
+	border-radius: 7px;
+	padding: 10px;
+	margin: 10px;
+}
+
+#chatControls 
+{
+	clear: both;
+	float: left;
+}
+
+#wrapper
+{
+	width: 700px;
+}
 .reg_cont .clear
 {
 }
