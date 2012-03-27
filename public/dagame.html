@@ -4,13 +4,13 @@
  	<body>
 		<script src="resources/game.js"></script>
 		
- 		<canvas id="dots_game" height="600" width="800">
+ 		<canvas id="dots_game" onmousedown=drawLine() height="600" width="800">
  			<script type="text/javascript">
  			</script>
  		</canvas>
  		
-		<a href="#" onMouseUp=field(1,1)><img name="jsbutton" width="60" height="20" alt="small"></a>
-		<a href="#" onMouseUp=field(2,1)><img name="jsbutton" width="60" height="20" alt="medium"></a>
-		<a href="#" onMouseUp=field(3,1)><img name="jsbutton" width="60" height="20" alt="big"></a>
+		<a href="#" onMouseUp=field(1)><img name="jsbutton" width="60" height="20" alt="small"></a>
+		<a href="#" onMouseUp=field(2)><img name="jsbutton" width="60" height="20" alt="medium"></a>
+		<a href="#" onMouseUp=field(3)><img name="jsbutton" width="60" height="20" alt="big"></a>
 	</body>
  </html>

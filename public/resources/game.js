@@ -1,4 +1,4 @@
-var x=0;var y=0;var z=0;var l=0;var i=0;var j=0;var h=0;var w=0;var d=0;var a=0;var b=0;var c=0;
+var x=0,y=0,z=0,l=0,i=0,j=0,h=0,w=0,d=0,a=0,b=0,c=0;
 
 function clearField() {
 	var canvas = document.getElementById("dots_game");
@@ -6,7 +6,7 @@ function clearField() {
 }	
 
 //iz4ertavane ne igralnoto pole
-function field(size,type){
+function field(size){
 	
 	clearField();
 	
@@ -114,6 +114,9 @@ function III(z,l,h,w,x,y,bo,i){
 }
 //krai na izchertavaneto na igralnoto pole
 
+var IE = document.all?true:false
+if (!IE) document.captureEvents(Event.MOUSEMOVE)
+
 var ratx=0,raty=0;
 
 function hex(){
@@ -137,13 +140,21 @@ function fieldArray(){
 
 //funkciq da chertae cherti
 function drawLine(){
+	function getMouseXY() {
+		if (IE) {
+			ratx = event.clientX + document.body.scrollLeft
+			raty = event.clientY + document.body.scrollTop
+		} else {
+			ratx = pageX
+			raty = pageY
+		}
+	}
 	var g=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
 	var bo=g.getContext("2d");
 	bo.fillStyle="#000000";
-
-
+	bo.lineTo(ratx,raty)
 	bo.stroke();
 }
 
