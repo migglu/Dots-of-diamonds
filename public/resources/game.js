@@ -138,6 +138,16 @@ function fieldArray(){
 	}
 }
 
+var dotx=0,doty=0;
+
+function dotxy(k,t){
+	dotx=k*w*2+w;
+	if(t%2!=0){
+		dotx+=w;
+	}
+	doty=t*(h+l)+h+l/2;
+}
+
 //funkciq da chertae cherti
 function drawLine(){
 	function getMouseXY() {
