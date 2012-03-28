@@ -3,14 +3,18 @@
 	</head>
  	<body>
 		<script src="resources/game.js"></script>
-		
- 		<canvas id="dots_game" onmousedown=drawLine() height="600" width="800">
- 			<script type="text/javascript">
- 			</script>
+ 		<canvas id="dots_game" height="600" width="800" style="border: 1px red solid;">
  		</canvas>
+		<div id="coords" >X =  Y = </div>
+		<div id="click_coords" >X =  Y = </div>
  		
-		<a href="#" onMouseUp=field(1)><img name="jsbutton" width="60" height="20" alt="small"></a>
-		<a href="#" onMouseUp=field(2)><img name="jsbutton" width="60" height="20" alt="medium"></a>
-		<a href="#" onMouseUp=field(3)><img name="jsbutton" width="60" height="20" alt="big"></a>
+ 		<script>
+ 			document.getElementById('dots_game').addEventListener('mousedown', drawLine);
+ 			document.getElementById('dots_game').addEventListener('mousemove', getMouseXY);
+ 		</script>
+ 		
+		<a href="#" onclick="field(1)"><img name="jsbutton" width="60" height="20" alt="small"></a>
+		<a href="#" onclick="field(2)"><img name="jsbutton" width="60" height="20" alt="medium"></a>
+		<a href="#" onclick="field(3)"><img name="jsbutton" width="60" height="20" alt="big"></a>
 	</body>
  </html>

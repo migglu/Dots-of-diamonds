@@ -49,6 +49,7 @@ function field(size){
 	III(z,l,h,w,x,y,bo);
 	bo.moveTo(0,h);
 	bo.stroke();
+	bo.closePath();
 }
 
 function whl(z,width,height){
@@ -114,8 +115,8 @@ function III(z,l,h,w,x,y,bo,i){
 }
 //krai na izchertavaneto na igralnoto pole
 
-var IE = document.all?true:false
-if (!IE) document.captureEvents(Event.MOUSEMOVE)
+var IE = document.all?true:false;
+if (!IE) document.captureEvents(Event.MOUSEMOVE);
 
 var ratx=0,raty=0;
 
@@ -148,24 +149,46 @@ function dotxy(k,t){
 	doty=t*(h+l)+h+l/2;
 }
 
-//funkciq da chertae cherti
-function drawLine(){
-	function getMouseXY() {
-		if (IE) {
-			ratx = event.clientX + document.body.scrollLeft
-			raty = event.clientY + document.body.scrollTop
-		} else {
-			ratx = pageX
-			raty = pageY
-		}
+
+function getMouseXY(e) {
+	var ev = e || window.event || window.Event;
+	if (IE) {
+		console.log(ratx);
+		ratx = ev.clientX + document.body.scrollLeft;
+		raty = ev.clientY + document.body.scrollTop;
+	} else {
+		ratx = ev.pageX;
+		raty = ev.pageY;
 	}
+	
+	var canvas = document.getElementById('dots_game');
+	
+	ratx -= canvas.offsetLeft;
+	raty -= canvas.offsetTop;
+	var str = 'X = ' + ratx + ' Y = ' + raty;
+	
+	document.getElementById('coords').innerHTML = str;
+}
+
+//funkciq da chertae cherti
+function drawLine(e){
+	getMouseXY(e);
+	
+	
+	var str = 'X = ' + ratx + ' Y = ' + raty;
+	document.getElementById('click_coords').innerHTML = str;
+	
+	
 	var g=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
 	var bo=g.getContext("2d");
+	bo.beginPath();
 	bo.fillStyle="#000000";
-	bo.lineTo(ratx,raty)
+	bo.moveTo(0,0);
+	bo.lineTo(ratx,raty);
 	bo.stroke();
+	bo.closePath();
 }
 
 //funkciq da zapulva rombche
