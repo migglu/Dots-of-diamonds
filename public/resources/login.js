@@ -15,6 +15,6 @@ function send(form)
 {
 	var pass = form.pass.value;
 	var name = form.user.value;
-	pass = hex_md5(pass);
+	pass = hex_sha256(pass);
 	login.emit('login', {'pass': pass, 'user': name});
 }

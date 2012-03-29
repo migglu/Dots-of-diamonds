@@ -135,7 +135,7 @@ function loginSocket(user, pass, socket, duplicateCallback)
 			}
 			var token = rows[0].id + '' + rows[0].pass + '' + new Date().toString();
 			
-			var hash = crypto.createHash('md5'); //BLOCKIIIIIIIIIIIIIIING, FIX AT ALL COST!
+			var hash = crypto.createHash('sha256'); //BLOCKIIIIIIIIIIIIIIING, FIX AT ALL COST!
 			hash.update(token);
 			token = hash.digest('hex');
 			
