@@ -4,6 +4,11 @@ var formidable = require("formidable");
 var statics = require("./statics");
 var user = require("./user");
 
+function game(response, request)
+{
+	statics.serveFile('/dagame.html', response, request);
+}
+
 function chat(response, request)
 {
 	//authentication?
@@ -74,3 +79,4 @@ exports.upload = upload;
 exports.show = show;
 exports.serveIndex = serveIndex;
 exports.chat = chat;
+exports.game = game;
