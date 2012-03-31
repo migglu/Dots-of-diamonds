@@ -1,4 +1,4 @@
-var x=0,y=0,z=0,l=0,i=0,j=0,h=0,w=0,d=0,a=0,b=0,c=0;
+var x=0,y=0,z=0,l=0,i=0,j=0,h=0,w=0,d=0,a=0,b=0,c=0,ratx=0,raty=0,dotx=0,doty=0,k=0,t=0,s=0,line=0;
 
 function clearField() {
 	var canvas = document.getElementById("dots_game");
@@ -7,7 +7,6 @@ function clearField() {
 
 //iz4ertavane ne igralnoto pole
 function field(size){
-	
 	clearField();
 	
 	var c=document.getElementById("dots_game");
@@ -16,22 +15,19 @@ function field(size){
 	var bo=c.getContext("2d");
 	bo.fillStyle="#000000";
 	switch(size){
-	case 1:{z=6;
-		whl(z,width,height);
-		
-	break;	
+	case 1:{
+		z=6;
+		break;	
 	}
-	case 2:{z=10;
-		whl(z,width,height);
-		
-	break;
+	case 2:{
+		z=10;
+		break;
 	}
 	case 3:{z=16;
-		whl(z,width,height);
-		
-	break;
+		break;
 	}
 	}	
+	whl(z,width,height);
 	y=h;
 	for(i=0;i<(z/2);i++){
 		drawRow(z,l,h,w,x,y,bo,i);
@@ -50,24 +46,8 @@ function field(size){
 	bo.moveTo(0,h);
 	bo.stroke();
 	bo.closePath();
-}
-
-function whl(z,width,height){
-	w=width/(2*z+1);
-	w=Math.floor(w);
 	
-	a=(2*z+1);
-	b=(-(2*height+2*z*height));
-	c=(height*height-w*w*z*z)
-	
-	d=b*b - 4*a*c;
-	
-	h=(-b-Math.sqrt(d))/(2*a);
-	h=Math.floor(h);
-	
-	l=(height-h-z*h)/z;
-	l=Math.floor(l);	
-	
+	return z;
 }
 
 function drawRow(z,l,h,w,x,y,bo,i){
@@ -115,11 +95,6 @@ function III(z,l,h,w,x,y,bo,i){
 }
 //krai na izchertavaneto na igralnoto pole
 
-var IE = document.all?true:false;
-if (!IE) document.captureEvents(Event.MOUSEMOVE);
-
-var ratx=0,raty=0;
-
 function hex(){
 	this.line1=false;
 	this.line2=false;
@@ -130,16 +105,11 @@ function hex(){
 }
 
 function fieldArray(){
-	var hexfield=new Array(z);
-	for(i=0;i<z;i++){
-		hexfield[i]=new Array(z);
-		for(j=0;j<z;j++){
-			hexfield[i][j]=new hex();
-		}
-	}
+	
 }
 
-var dotx=0,doty=0;
+var IE = document.all?true:false;
+if (!IE) document.captureEvents(Event.MOUSEMOVE);
 
 function dotxy(k,t){
 	dotx=k*w*2+w;
@@ -149,6 +119,168 @@ function dotxy(k,t){
 	doty=t*(h+l)+h+l/2;
 }
 
+
+function mouseInHex(ratx,raty){
+	k=ratx/(2*w);
+	k=Math.floor(k);
+	t=raty/(h+l);
+	t=Math.floor(t);
+}
+
+function whereInHex(ratx,raty,dotx,doty,k,t){
+	if(isItIn1(ratx,raty,dotx,doty)){
+		line=1;j=k;i=t;
+	}else
+	if(isItIn2(ratx,raty,dotx,doty)){
+		line=2;j=k;i=t;
+	}else
+	if(isItIn3(ratx,raty,dotx,doty)){
+		line=3;j=k;i=t;
+	}else
+	if(isItIn4(ratx,raty,dotx,doty)){
+		line=4;j=k;i=t;
+	}else
+	if(isItIn5(ratx,raty,dotx,doty)){
+		line=5;j=k;i=t;
+	}else
+	if(isItIn6(ratx,raty,dotx,doty)){
+		line=6;j=k;i=t;
+	}
+}
+
+function mouseLine(ratx,raty){
+//	fieldArray();
+	mouseInHex(ratx,raty);
+	s=Math.floor(ratx/w);
+	dotxy(k,t);
+	whereInHex(ratx,raty,dotx,doty,k,t);		
+}
+
+//funkciq da chertae cherti
+function drawLine(e){
+	
+//	fieldArray();
+	
+	var hexfield=new Array(z);
+	console.log(z);
+	for(i=0;i<z;i++){
+		hexfield[i]=new Array(z);
+		for(j=0;j<z;j++){
+			hexfield[i][j]=new hex();
+		}
+	}
+	
+	getMouseXY(e);	
+	
+	var str = 'X = ' + ratx + ' Y = ' + raty;
+	document.getElementById('click_coords').innerHTML = str;		
+	
+	var g=document.getElementById("dots_game");
+	var width=document.getElementById("dots_game").width;
+	var height=document.getElementById("dots_game").height;
+	var bo=g.getContext("2d");
+	bo.beginPath();
+	bo.fillStyle="#000000";
+	whl(z,width,height);
+	mouseLine(ratx,raty,bo);
+	bo.moveTo(dotx,doty);
+	switch(line){
+	case 1:{
+		hexfield[i][j].line1=true;	
+		bo.lineTo(dotx,doty-h-l/2);
+		break;
+	}
+	case 2:{
+		hexfield[i][j].line2=true;	
+		bo.lineTo(dotx-w,doty-l/2);
+		break;
+	}	
+	case 3:{
+		hexfield[i][j].line3=true;
+		bo.lineTo(dotx-w,doty+l/2);	
+		break;
+	}
+	case 4:{
+		hexfield[i][j].line4=true;	
+		bo.lineTo(dotx,doty+h+l/2);
+		break;
+	}	
+	case 5:{
+		hexfield[i][j].line5=true;
+		bo.lineTo(dotx+w,doty+l/2);	
+		break;
+	}
+	case 6:{
+		hexfield[i][j].line6=true;	
+		bo.lineTo(dotx+w,doty-l/2);
+		break;
+	}	
+	}
+	bo.stroke();
+	bo.closePath();
+}
+
+
+
+
+//funkciq da zapulva rombche
+
+//AI
+//ELO
+
+
+
+
+//pomoshtni funkcii nadolu
+
+function isItIn1(ratx,raty,dotx,doty){
+	if(ratx>=Math.floor(dotx-w/5)
+	&& ratx<=Math.floor(dotx+w/5)
+	&& raty<=Math.floor(doty-l/2-h*4/5) 
+	&& raty>=Math.floor(doty-l/16)){
+		return true;
+	}
+}
+function isItIn2(ratx,raty,dotx,doty){
+	if(ratx>=(Math.floor(dotx-w+1)) 
+	&& ratx<=(Math.floor(dotx-w/5-1)) 
+	&& raty>=(Math.floor(doty-l/2+1)) 
+	&& raty<=(Math.floor(doty-1))){
+		return true;
+	}
+}
+function isItIn3(ratx,raty,dotx,doty){
+	if(ratx>=Math.floor(dotx-w+1) 
+	&& ratx<=Math.floor(dotx-w/5-1) 
+	&& raty>=Math.floor(doty+1) 
+	&& raty<=Math.floor(doty+l/2-1)){
+		return true;
+	}
+}
+function isItIn4(ratx,raty,dotx,doty){
+	if(ratx>=Math.floor(dotx-w/5) 
+	&& ratx<=Math.floor(dotx+w/5) 
+	&& raty>=Math.floor(doty+l/16) 
+	&& raty<=Math.floor(doty+l/2+h*4/5)){
+		return true;
+	}
+}
+function isItIn5(ratx,raty,dotx,doty){
+	if(ratx>=Math.floor(dotx+w/5+1) 
+	&& ratx<=Math.floor(dotx+w-1) 
+	&& raty>=Math.floor(doty+1) 
+	&& raty<=Math.floor(doty+l/2-1)){
+		return true;
+	}
+}
+function isItIn6(ratx,raty,dotx,doty){
+	if(ratx>=Math.floor(dotx+w/5+1) 
+	&& ratx<=Math.floor(dotx+w-1) 
+	&& raty>=Math.floor(doty-l/2+1) 
+	&& raty<=Math.floor(doty-1)){
+		return true;
+	}
+}
 
 function getMouseXY(e) {
 	var ev = e || window.event || window.Event;
@@ -170,28 +302,19 @@ function getMouseXY(e) {
 	document.getElementById('coords').innerHTML = str;
 }
 
-//funkciq da chertae cherti
-function drawLine(e){
-	getMouseXY(e);
+function whl(z,width,height){
+	w=width/(2*z+1);
+	w=Math.floor(w);
 	
+	a=(2*z+1);
+	b=(-(2*height+2*z*height));
+	c=(height*height-w*w*z*z)
 	
-	var str = 'X = ' + ratx + ' Y = ' + raty;
-	document.getElementById('click_coords').innerHTML = str;
+	d=b*b - 4*a*c;
 	
+	h=(-b-Math.sqrt(d))/(2*a);
+	h=Math.floor(h);
 	
-	var g=document.getElementById("dots_game");
-	var width=document.getElementById("dots_game").width;
-	var height=document.getElementById("dots_game").height;
-	var bo=g.getContext("2d");
-	bo.beginPath();
-	bo.fillStyle="#000000";
-	bo.moveTo(0,0);
-	bo.lineTo(ratx,raty);
-	bo.stroke();
-	bo.closePath();
+	l=(height-h-z*h)/z;
+	l=Math.floor(l);		
 }
-
-//funkciq da zapulva rombche
-
-//AI
-//ELO
