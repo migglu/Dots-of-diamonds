@@ -109,8 +109,6 @@ var IE = document.all?true:false;
 if (!IE) document.captureEvents(Event.MOUSEMOVE);
 
 function dotxy(){
-	console.log('k = ' + k);
-	console.log('t = ' + t);
 	dotx=k*hex_width*2+hex_width;
 	if(t%2!=0){
 		dotx+=hex_width;
@@ -120,7 +118,6 @@ function dotxy(){
 
 function fieldArray(hex_counter){
 	hexarray=new Array(hex_counter);
-	console.log(hex_counter);
 	for(i=0;i<hex_counter;i++){
 		hexarray[i]=new Array(hex_counter);
 		for(j=0;j<hex_counter;j++){
@@ -141,25 +138,51 @@ function mouseInHex(ratx,raty){
 	k=Math.floor(k);
 }
 
-function whereInHex(ratx,raty,dotx,doty){
-	console.log('dotx = ' + dotx);
-	console.log('doty = ' + doty);
-	if(isItIn1(ratx,raty,dotx,doty)){
+function whereInHex(){
+	in_side_of_hex=Math.floor(ratx/hex_width);
+	if(raty<doty-Math.floor(hex_length/2)){
+		if(isItIn1()){
+			line=1;i=k;j=t;
+		}else
+		if(in_side_of_hex%2==1){
+			t--;
+			dotxy();
+			if(isItIn4()){
+				line=4;i=k;j=t;
+			}
+		}else{
+			if(t%2==1){
+				t--;k++;
+				dotxy();
+				if(isItIn4()){
+					line=4;i=k;j=t;
+				}
+			}
+			if(t%2==1){
+				t--;k--;
+				dotxy();
+				if(isItIn4()){
+					line=4;i=k;j=t;
+				}
+			}
+		}
+	}	
+	if(isItIn1()){
 		line=1;i=k;j=t;
 	}else
-	if(isItIn2(ratx,raty,dotx,doty)){
+	if(isItIn2()){
 		line=2;i=k;j=t;
 	}else
-	if(isItIn3(ratx,raty,dotx,doty)){
+	if(isItIn3()){
 		line=3;i=k;j=t;
 	}else
-	if(isItIn4(ratx,raty,dotx,doty)){
+	if(isItIn4()){
 		line=4;i=k;j=t;
 	}else
-	if(isItIn5(ratx,raty,dotx,doty)){
+	if(isItIn5()){
 		line=5;i=k;j=t;
 	}else
-	if(isItIn6(ratx,raty,dotx,doty)){
+	if(isItIn6()){
 		line=6;i=k;j=t;
 	}
 }
@@ -167,7 +190,7 @@ function whereInHex(ratx,raty,dotx,doty){
 function mouseLine(ratx,raty){
 	s=Math.floor(ratx/hex_width);
 	dotxy();
-	whereInHex(ratx,raty,dotx,doty);		
+	whereInHex();		
 }
 
 //funkciq da chertae cherti
@@ -256,63 +279,56 @@ function drawLine(e){
 
 //pomoshtni funkcii nadolu
 
-function isItIn1(ratx,raty,dotx,doty){
+function isItIn1(){
 	if(ratx>=Math.floor(dotx-hex_width/5)
 	&& ratx<=Math.floor(dotx+hex_width/5)
 	&& raty>=Math.floor(doty-hex_length/2-hex_height*4/5) 
-	&& raty<=Math.floor(doty-1)){	
-		console.log("in line 1");
-		
+	&& raty<=Math.floor(doty-1)){		
 		return true;
 	}
 	return false;
 }
-function isItIn2(ratx,raty,dotx,doty){
+function isItIn2(){
 	if(ratx>=(Math.floor(dotx-hex_width+1)) 
 	&& ratx<=(Math.floor(dotx-hex_width/5-1)) 
 	&& raty>=(Math.floor(doty-hex_length/2+1)) 
 	&& raty<=(Math.floor(doty-1))){
-		console.log("in line 2");
 		return true;
 	}
 	return false;
 }
-function isItIn3(ratx,raty,dotx,doty){
+function isItIn3(){
 	if(ratx>=Math.floor(dotx-hex_width+1) 
 	&& ratx<=Math.floor(dotx-hex_width/5-1) 
 	&& raty>=Math.floor(doty+1) 
 	&& raty<=Math.floor(doty+hex_length/2-1)){
-		console.log("in line 3");
 		return true;
 	}
 	return false;
 }
-function isItIn4(ratx,raty,dotx,doty){
+function isItIn4(){
 	if(ratx>=Math.floor(dotx-hex_width/5) 
 	&& ratx<=Math.floor(dotx+hex_width/5) 
 	&& raty>=Math.floor(doty+1) 
 	&& raty<=Math.floor(doty+hex_length/2+hex_height*4/5)){
-		console.log("in line 4");
 		return true;
 	}
 	return false;
 }
-function isItIn5(ratx,raty,dotx,doty){
+function isItIn5(){
 	if(ratx>=Math.floor(dotx+hex_width/5+1) 
 	&& ratx<=Math.floor(dotx+hex_width-1) 
 	&& raty>=Math.floor(doty+1) 
 	&& raty<=Math.floor(doty+hex_length/2-1)){
-		console.log("in line 5");
 		return true;
 	}
 	return false;
 }
-function isItIn6(ratx,raty,dotx,doty){
+function isItIn6(){
 	if(ratx>=Math.floor(dotx+hex_width/5+1) 
 	&& ratx<=Math.floor(dotx+hex_width-1) 
 	&& raty>=Math.floor(doty-hex_length/2+1) 
 	&& raty<=Math.floor(doty-1)){
-		console.log("in line 6");
 		return true;
 	}
 	return false;
