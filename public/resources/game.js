@@ -1,4 +1,4 @@
-var x=0,y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,
+var draw_x=0,draw_y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,
 	d=0,a=0,b=0,c=0,ratx=0,raty=0,dotx=0,doty=0,k=0,t=0,in_side_of_hex=0,line=0,hexarray;
 
 function clearField() {
@@ -28,11 +28,11 @@ function field(size){
 		break;
 	}
 	}	
-	whl(hex_counter,width,height);
-	y=hex_height;
+	whl(width,height);
+	draw_y=hex_height;
 	for(i=0;i<(hex_counter/2);i++){
-		drawRow(hex_counter,hex_length,hex_height,hex_width,x,y,bo);
-		y+=2*hex_length+2*hex_height;
+		drawRow(bo);
+		draw_y+=hex_height;
 	}
 	for(i=0;i<(hex_counter/2-1);i++){
 		j=(1+i)*(2*hex_length+2*hex_height);
@@ -40,10 +40,10 @@ function field(size){
 		bo.moveTo(d,j);
 		bo.lineTo(d-hex_width,j+hex_height)
 	}
-	x=hex_width;
-	y=(hex_counter/2)*(2*hex_length+2*hex_height);
-	bo.moveTo(x,y);
-	III(hex_counter,hex_length,hex_height,hex_width,x,y,bo);
+	draw_x=hex_width;
+	draw_y=(hex_counter/2)*(2*hex_length+2*hex_height);
+	bo.moveTo(draw_x,draw_y);
+	draw_W(bo);
 	bo.moveTo(0,hex_height);
 	bo.stroke();
 	bo.closePath();
@@ -51,47 +51,47 @@ function field(size){
 	return hex_counter;
 }
 
-function drawRow(hex_counter,hex_length,hex_height,hex_width,x,y,bo){
-	x=0;
-	bo.moveTo(x,y);
-	I(hex_counter,hex_length,hex_height,hex_width,x,y,bo);
-	y+=hex_length;
-	II(hex_counter,hex_length,hex_height,hex_width,x,y,bo);
-	x=0;
-	bo.moveTo(x,y);
-	x+=hex_width;y+=hex_height;
-	bo.lineTo(x,y);
-	I(hex_counter,hex_length,hex_height,hex_width,x,y,bo);
-	y+=hex_length;
-	II(hex_counter,hex_length,hex_height,hex_width,x,y,bo);
-	bo.moveTo(hex_width,y);
+function drawRow(bo){
+	draw_x=0;
+	bo.moveTo(draw_x,draw_y);
+	draw_M(bo);
+	draw_y+=hex_length;
+	draw_II(bo);
+	draw_x=0;
+	bo.moveTo(draw_x,draw_y);
+	draw_x+=hex_width;draw_y+=hex_height;
+	bo.lineTo(draw_x,draw_y);
+	draw_M(bo);
+	draw_y+=hex_length;
+	draw_II(bo);
+	bo.moveTo(hex_width,draw_y);
 }
 
-function I(hex_counter,hex_length,hex_height,hex_width,x,y,bo){
+function draw_M(bo){
 	for(j=0;j<hex_counter;j+=1){
-		x+=hex_width;y-=hex_height;
-		bo.lineTo(x,y);
-		x+=hex_width;y+=hex_height;
-		bo.lineTo(x,y);
+		draw_x+=hex_width;draw_y-=hex_height;
+		bo.lineTo(draw_x,draw_y);
+		draw_x+=hex_width;draw_y+=hex_height;
+		bo.lineTo(draw_x,draw_y);
 	}
-	x-=(2*hex_width*hex_counter);
+	draw_x-=(2*hex_width*hex_counter);
 }
-function II(hex_counter,hex_length,hex_height,hex_width,x,y,bo){
+function draw_II(bo){
 	for(j=0;j<(hex_counter+1);j+=1){
-		y-=hex_length;
-		bo.moveTo(x,y);
-		y+=hex_length;
-		bo.lineTo(x,y);
-		x+=2*hex_width;
+		draw_y-=hex_length;
+		bo.moveTo(draw_x,draw_y);
+		draw_y+=hex_length;
+		bo.lineTo(draw_x,draw_y);
+		draw_x+=2*hex_width;
 	}
-	x-=(2*hex_width*hex_counter);
+	draw_x-=(2*hex_width*hex_counter);
 }
-function III(hex_counter,hex_length,hex_height,hex_width,x,y,bo){
+function draw_W(bo){
 	for(j=0;j<hex_counter;j+=1){
-		x+=hex_width;y+=hex_height;
-		bo.lineTo(x,y);
-		x+=hex_width;y-=hex_height;
-		bo.lineTo(x,y);
+		draw_x+=hex_width;draw_y+=hex_height;
+		bo.lineTo(draw_x,draw_y);
+		draw_x+=hex_width;draw_y-=hex_height;
+		bo.lineTo(draw_x,draw_y);
 	}
 }
 //krai na izchertavaneto na igralnoto pole
@@ -134,6 +134,7 @@ function mouseInHex(ratx,raty){
 	t=Math.floor(t);
 	if(t%2==1){
 		k=(ratx+hex_width)/(2*hex_width);
+		k--;
 	}else{
 	k=ratx/(2*hex_width);
 	}
@@ -189,39 +190,51 @@ function drawLine(e){
 	var bo=g.getContext("2d");
 	bo.beginPath();
 	bo.fillStyle="#000000";
-	whl(hex_counter,width,height);
+	whl(width,height);
 	mouseLine(ratx,raty,bo);
 	bo.moveTo(dotx,doty);
 	
 	switch(line){
 	case 1:{
-		bo.lineTo(dotx,doty-hex_height-hex_length/2);
-		hexarray[i][j].line1=true;	
+		if(hexarray[i][j].line1!=true){
+			hexarray[i][j].line1=true;	
+			bo.lineTo(dotx,doty-hex_height-hex_length/2);
+		}
 		break;
 	}
 	case 2:{
-		bo.lineTo(dotx-hex_width,doty-hex_length/2);
-		hexarray[i][j].line2=true;	
+		if(hexarray[i][j].line2!=true){
+			hexarray[i][j].line2=true;	
+			bo.lineTo(dotx-hex_width,doty-hex_length/2);
+		}
 		break;
 	}	
 	case 3:{
-		bo.lineTo(dotx-hex_width,doty+hex_length/2);
-		hexarray[i][j].line3=true;	
+		if(hexarray[i][j].line3!=true){
+			hexarray[i][j].line3=true;	
+			bo.lineTo(dotx-hex_width,doty+hex_length/2);
+		}
 		break;
 	}
 	case 4:{
-		bo.lineTo(dotx,doty+hex_height+hex_length/2);
-		hexarray[i][j].line4=true;	
+		if(hexarray[i][j].line4!=true){
+			hexarray[i][j].line4=true;	
+			bo.lineTo(dotx,doty+hex_height+hex_length/2);
+		}
 		break;
 	}	
 	case 5:{
-		bo.lineTo(dotx+hex_width,doty+hex_length/2);
-		hexarray[i][j].line5=true;	
+		if(hexarray[i][j].line5!=true){
+			hexarray[i][j].line5=true;	
+			bo.lineTo(dotx+hex_width,doty+hex_length/2);
+		}
 		break;
 	}
 	case 6:{
-		bo.lineTo(dotx+hex_width,doty-hex_length/2);
-		hexarray[i][j].line6=true;	
+		if(hexarray[i][j].line6!=true){
+			hexarray[i][j].line6=true;	
+			bo.lineTo(dotx+hex_width,doty-hex_length/2);
+		}
 		break;
 	}	
 	}
@@ -247,9 +260,9 @@ function isItIn1(ratx,raty,dotx,doty){
 	if(ratx>=Math.floor(dotx-hex_width/5)
 	&& ratx<=Math.floor(dotx+hex_width/5)
 	&& raty>=Math.floor(doty-hex_length/2-hex_height*4/5) 
-	&& raty<=Math.floor(doty-1)
-	&& hexarray[k][t].line1!=true){	
+	&& raty<=Math.floor(doty-1)){	
 		console.log("in line 1");
+		
 		return true;
 	}
 	return false;
@@ -258,8 +271,7 @@ function isItIn2(ratx,raty,dotx,doty){
 	if(ratx>=(Math.floor(dotx-hex_width+1)) 
 	&& ratx<=(Math.floor(dotx-hex_width/5-1)) 
 	&& raty>=(Math.floor(doty-hex_length/2+1)) 
-	&& raty<=(Math.floor(doty-1))
-	&& hexarray[k][t].line2!=true){
+	&& raty<=(Math.floor(doty-1))){
 		console.log("in line 2");
 		return true;
 	}
@@ -269,8 +281,7 @@ function isItIn3(ratx,raty,dotx,doty){
 	if(ratx>=Math.floor(dotx-hex_width+1) 
 	&& ratx<=Math.floor(dotx-hex_width/5-1) 
 	&& raty>=Math.floor(doty+1) 
-	&& raty<=Math.floor(doty+hex_length/2-1)
-	&& hexarray[k][t].line3!=true){
+	&& raty<=Math.floor(doty+hex_length/2-1)){
 		console.log("in line 3");
 		return true;
 	}
@@ -280,8 +291,7 @@ function isItIn4(ratx,raty,dotx,doty){
 	if(ratx>=Math.floor(dotx-hex_width/5) 
 	&& ratx<=Math.floor(dotx+hex_width/5) 
 	&& raty>=Math.floor(doty+1) 
-	&& raty<=Math.floor(doty+hex_length/2+hex_height*4/5)
-	&& hexarray[k][t].line4!=true){
+	&& raty<=Math.floor(doty+hex_length/2+hex_height*4/5)){
 		console.log("in line 4");
 		return true;
 	}
@@ -291,8 +301,7 @@ function isItIn5(ratx,raty,dotx,doty){
 	if(ratx>=Math.floor(dotx+hex_width/5+1) 
 	&& ratx<=Math.floor(dotx+hex_width-1) 
 	&& raty>=Math.floor(doty+1) 
-	&& raty<=Math.floor(doty+hex_length/2-1)
-	&& hexarray[k][t].line5!=true){
+	&& raty<=Math.floor(doty+hex_length/2-1)){
 		console.log("in line 5");
 		return true;
 	}
@@ -302,8 +311,7 @@ function isItIn6(ratx,raty,dotx,doty){
 	if(ratx>=Math.floor(dotx+hex_width/5+1) 
 	&& ratx<=Math.floor(dotx+hex_width-1) 
 	&& raty>=Math.floor(doty-hex_length/2+1) 
-	&& raty<=Math.floor(doty-1)
-	&& hexarray[k][t].line6!=true){
+	&& raty<=Math.floor(doty-1)){
 		console.log("in line 6");
 		return true;
 	}
@@ -333,7 +341,7 @@ function getMouseXY(e) {
 	document.getElementById('coords').innerHTML = str;
 }
 
-function whl(hex_counter,width,height){
+function whl(width,height){
 	hex_width=width/(2*hex_counter+1);
 	hex_width=Math.floor(hex_width);
 	
