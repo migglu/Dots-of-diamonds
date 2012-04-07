@@ -1,9 +1,11 @@
-var draw_x=0,draw_y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,
+var draw_x=0,draw_y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,player=1,player1_points=0,player2_points=0,switching=0,
 	d=0,a=0,b=0,c=0,ratx=0,raty=0,dotx=0,doty=0,k=0,t=0,in_side_of_hex=0,line=0,hexarray;
 
 function clearField() {
 	var canvas = document.getElementById("dots_game");
 	canvas.width = canvas.width;
+	draw_x=0,draw_y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,player=1,player1_points=0,player2_points=0,switching=0,
+	d=0,a=0,b=0,c=0,ratx=0,raty=0,dotx=0,doty=0,k=0,t=0,in_side_of_hex=0,line=0;
 }	
 
 //iz4ertavane ne igralnoto pole
@@ -14,7 +16,7 @@ function field(size){
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
 	var bo=c.getContext("2d");
-	bo.fillStyle="#000000";
+	bo.strokeStyle="#a0a0a0";
 	switch(size){
 	case 1:{
 		hex_counter=6;
@@ -103,6 +105,12 @@ function hex(){
 	this.line4=false;
 	this.line5=false;
 	this.line6=false;
+	this.side1=false;
+	this.side2=false;
+	this.side3=false;
+	this.side4=false;
+	this.side5=false;
+	this.side6=false;
 }
 
 var IE = document.all?true:false;
@@ -212,7 +220,13 @@ function drawLine(e){
 	var height=document.getElementById("dots_game").height;
 	var bo=g.getContext("2d");
 	bo.beginPath();
-	bo.fillStyle="#000000";
+	if(player==1){
+		bo.strokeStyle="#0000ff";
+		bo.fillStyle="#0000ff";
+	}else if(player==2){
+		bo.strokeStyle="#ff0000";
+		bo.fillStyle="#ff0000";
+	}
 	whl(width,height);
 	mouseLine(ratx,raty,bo);
 	bo.moveTo(dotx,doty);
@@ -222,6 +236,7 @@ function drawLine(e){
 		if(hexarray[i][j].line1!=true){
 			hexarray[i][j].line1=true;	
 			bo.lineTo(dotx,doty-hex_height-hex_length/2);
+			switchPlayer();
 		}
 		break;
 	}
@@ -229,6 +244,7 @@ function drawLine(e){
 		if(hexarray[i][j].line2!=true){
 			hexarray[i][j].line2=true;	
 			bo.lineTo(dotx-hex_width,doty-hex_length/2);
+			switchPlayer();
 		}
 		break;
 	}	
@@ -236,6 +252,7 @@ function drawLine(e){
 		if(hexarray[i][j].line3!=true){
 			hexarray[i][j].line3=true;	
 			bo.lineTo(dotx-hex_width,doty+hex_length/2);
+			switchPlayer();
 		}
 		break;
 	}
@@ -243,6 +260,7 @@ function drawLine(e){
 		if(hexarray[i][j].line4!=true){
 			hexarray[i][j].line4=true;	
 			bo.lineTo(dotx,doty+hex_height+hex_length/2);
+			switchPlayer();
 		}
 		break;
 	}	
@@ -250,6 +268,7 @@ function drawLine(e){
 		if(hexarray[i][j].line5!=true){
 			hexarray[i][j].line5=true;	
 			bo.lineTo(dotx+hex_width,doty+hex_length/2);
+			switchPlayer();
 		}
 		break;
 	}
@@ -257,19 +276,191 @@ function drawLine(e){
 		if(hexarray[i][j].line6!=true){
 			hexarray[i][j].line6=true;	
 			bo.lineTo(dotx+hex_width,doty-hex_length/2);
+			switchPlayer();
 		}
 		break;
 	}	
 	}
 	
+	fillTaken(bo);
+	if(switching){
+		switchPlayer();
+		if(player==1){
+			player1_points+=switching;
+		}else{
+			player2_points+=switching;
+		}		
+		console.log("player1: " + player1_points)
+		console.log("player2: " + player2_points)
+		switching=0;
+	}
+	
 	bo.stroke();
 	bo.closePath();
+	
+	return player;
+}
+
+
+//funkciq da zapulva rombche
+function fillTaken(bo){
+	switch(line){
+	case 1:{
+		if(doesItGet1()){
+			fill1(bo);
+			t--;
+			if(j%2==1){
+				fill4(bo);
+			}else{
+				k--;
+				fill4(bo);
+				k++;
+			}
+			t++;
+			switching++;
+		}
+		if(doesItGet6()){
+			fill6(bo);
+			t--;
+			if(j%2==1){
+				k++;
+				fill3(bo);
+				k--;
+			}else{
+				fill3(bo);
+			}
+			t++;
+			switching++;
+		}
+		break;
+	}
+	case 2:{
+		if(doesItGet1()){
+			fill1(bo);
+			t--;
+			if(j%2==1){
+				fill4(bo);
+			}else{
+				k--;
+				fill4(bo);
+				k++;
+			}
+			t++;
+			switching++;
+		}
+		if(doesItGet2()){
+			fill2(bo);
+			k--;
+			fill5(bo);
+			k++;
+			switching++;
+		}
+		break;
+	}	
+	case 3:{
+		if(doesItGet3()){
+			fill3(bo);
+			t++;
+			if(j%2==1){
+				fill6(bo);
+			}else{
+				k--;
+				fill6(bo);
+				k++;
+			}
+			t--;
+			switching++;
+		}
+		if(doesItGet2()){
+			fill2(bo);
+			k--;
+			fill5(bo);
+			k++;
+			switching++;
+		}
+		break;
+	}
+	case 4:{
+		if(doesItGet3()){
+			fill3(bo);
+			t++;
+			if(j%2==1){
+				fill6(bo);
+			}else{
+				k--;
+				fill6(bo);
+				k++;
+			}
+			t--;
+			switching++;
+		}
+		if(doesItGet4()){
+			fill4(bo);
+			t++;
+			if(j%2==1){
+				k++;
+				fill1(bo);
+				k--;
+			}else{
+				fill1(bo);
+			}
+			t--;
+			switching++;
+		}
+		break;
+	}	
+	case 5:{
+		if(doesItGet5()){
+			fill5(bo);
+			k++;
+			fill2(bo);
+			k--;
+			switching++;
+		}
+		if(doesItGet4()){
+			fill4(bo);
+			t++;
+			if(j%2==1){
+				k++;
+				fill1(bo);
+				k--;
+			}else{
+				fill1(bo);
+			}
+			t--;
+			switching++;
+		}
+		break;
+	}
+	case 6:{
+		if(doesItGet5()){
+			fill5(bo);
+			k++;
+			fill2(bo);
+			k--;
+			switching++;
+		}
+		if(doesItGet6()){
+			fill6(bo);
+			t--;
+			if(j%2==1){
+				k++;
+				fill3(bo);
+				k--;
+			}else{
+				fill3(bo);
+			}
+			t++;
+			switching++;
+		}
+		break;
+	}	
+	}
+	
 }
 
 
 
-
-//funkciq da zapulva rombche
 
 //AI
 //ELO
@@ -278,6 +469,190 @@ function drawLine(e){
 
 
 //pomoshtni funkcii nadolu
+function doesItGet1(){
+	if(j!=0){
+		if(j%2==1){
+			if(hexarray[i][j].line1==true 
+			&& hexarray[i][j].line2==true 
+			&& hexarray[i][j-1].line4==true 
+			&& hexarray[i][j-1].line5==true 
+			&& hexarray[i][j].side1==false){
+				return true;
+			}
+		}else{
+			if(i!=0 
+			&& hexarray[i][j].line1==true 
+			&& hexarray[i][j].line2==true 
+			&& hexarray[i-1][j-1].line4==true 
+			&& hexarray[i-1][j-1].line5==true 
+			&& hexarray[i][j].side1==false){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function doesItGet2(){
+	if(i!=0){
+		if(hexarray[i][j].line2==true 
+		&& hexarray[i][j].line3==true 
+		&& hexarray[i-1][j].line5==true 
+		&& hexarray[i-1][j].line6==true 
+		&& hexarray[i][j].side2==false){
+			return true;
+		}
+		
+	}
+	return false;	
+}
+
+function doesItGet3(){
+	if(j!=hex_counter-1){
+		if(j%2==1){
+			if(hexarray[i][j].line3==true 
+			&& hexarray[i][j].line4==true 
+			&& hexarray[i][j+1].line1==true 
+			&& hexarray[i][j+1].line6==true 
+			&& hexarray[i][j].side3==false){
+				return true;
+			}
+		}else{
+			if(i!=0 
+			&& hexarray[i][j].line3==true 
+			&& hexarray[i][j].line4==true 
+			&& hexarray[i-1][j+1].line1==true 
+			&& hexarray[i-1][j+1].line6==true 
+			&& hexarray[i][j].side3==false){
+				return true;
+			}
+		}
+	}
+	return false;	
+}
+
+function doesItGet4(){
+	if(j!=hex_counter-1){
+		if(j%2==1){
+			if(i!=hex_counter-1 
+			&& hexarray[i][j].line4==true 
+			&& hexarray[i][j].line5==true 
+			&& hexarray[i+1][j+1].line1==true 
+			&& hexarray[i+1][j+1].line2==true 
+			&& hexarray[i][j].side4==false){
+				return true;
+			}
+		}else{
+			if(hexarray[i][j].line4==true 
+			&& hexarray[i][j].line5==true 
+			&& hexarray[i][j+1].line1==true 
+			&& hexarray[i][j+1].line2==true 
+			&& hexarray[i][j].side4==false){
+				return true;
+			}
+		}
+	}
+	return false;	
+}
+
+function doesItGet5(){
+	if(i!=hex_counter-1){
+		if(hexarray[i][j].line5==true 
+		&& hexarray[i][j].line6==true 
+		&& hexarray[i+1][j].line2==true 
+		&& hexarray[i+1][j].line3==true 
+		&& hexarray[i][j].side5==false){
+			return true;
+		}	
+	}
+	return false;		
+}
+
+function doesItGet6(){
+	if(j!=0){
+		if(j%2==1){
+			if(i!=hex_counter-1
+			&& hexarray[i][j].line1==true 
+			&& hexarray[i][j].line6==true 
+			&& hexarray[i+1][j-1].line4==true 
+			&& hexarray[i+1][j-1].line3==true 
+			&& hexarray[i][j].side6==false){
+				return true;
+			}
+		}else{
+			if(hexarray[i][j].line1==true 
+			&& hexarray[i][j].line6==true 
+			&& hexarray[i][j-1].line3==true 
+			&& hexarray[i][j-1].line4==true 
+			&& hexarray[i][j].side6==false){
+				return true;
+			}
+		}
+	}
+	return false;	
+}
+
+function fill1(bo){
+	dotxy();
+	hexarray[k][t].side1=true;
+	bo.moveTo(dotx,doty);
+	bo.lineTo(dotx-hex_width,doty-hex_length/2);
+	bo.lineTo(dotx,doty-hex_length/2-hex_height);
+	bo.fill();
+}
+
+function fill2(bo){
+	dotxy();
+	hexarray[k][t].side2=true;
+	bo.moveTo(dotx,doty);
+	bo.lineTo(dotx-hex_width,doty-hex_length/2);
+	bo.lineTo(dotx-hex_width,doty+hex_length/2);
+	bo.fill();
+}
+
+function fill3(bo){
+	dotxy();
+	hexarray[k][t].side3=true;
+	bo.moveTo(dotx,doty);
+	bo.lineTo(dotx-hex_width,doty+hex_length/2);
+	bo.lineTo(dotx,doty+hex_length/2+hex_height);
+	bo.fill();
+}
+
+function fill4(bo){
+	dotxy();
+	hexarray[k][t].side4=true;
+	bo.moveTo(dotx,doty);
+	bo.lineTo(dotx+hex_width,doty+hex_length/2);
+	bo.lineTo(dotx,doty+hex_length/2+hex_height);
+	bo.fill();
+}
+
+function fill5(bo){
+	dotxy();
+	hexarray[k][t].side5=true;
+	bo.moveTo(dotx,doty);
+	bo.lineTo(dotx+hex_width,doty-hex_length/2);
+	bo.lineTo(dotx+hex_width,doty+hex_length/2);
+	bo.fill();
+}
+
+function fill6(bo){
+	dotxy();
+	hexarray[k][t].side6=true;
+	bo.moveTo(dotx,doty);
+	bo.lineTo(dotx+hex_width,doty-hex_length/2);
+	bo.lineTo(dotx,doty-hex_length/2-hex_height);
+	bo.fill();
+}
+
+function switchPlayer(){
+	if(player==1){
+		player=2;
+	}else if(player==2){
+		player=1;
+	}
+}
 
 function isItIn1(){
 	if(ratx>=Math.floor(dotx-hex_width/5)
