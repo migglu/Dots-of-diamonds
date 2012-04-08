@@ -16,7 +16,7 @@ function field(size){
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
 	var bo=c.getContext("2d");
-	bo.strokeStyle="#a0a0a0";
+	bo.strokeStyle="#c0c0c0";
 	switch(size){
 	case 1:{
 		hex_counter=6;
@@ -307,151 +307,55 @@ function fillTaken(bo){
 	switch(line){
 	case 1:{
 		if(doesItGet1()){
-			fill1(bo);
-			t--;
-			if(j%2==1){
-				fill4(bo);
-			}else{
-				k--;
-				fill4(bo);
-				k++;
-			}
-			t++;
-			switching++;
+			fillRomboid1(bo);
 		}
 		if(doesItGet6()){
-			fill6(bo);
-			t--;
-			if(j%2==1){
-				k++;
-				fill3(bo);
-				k--;
-			}else{
-				fill3(bo);
-			}
-			t++;
-			switching++;
+			fillRomboid6(bo);
 		}
 		break;
 	}
 	case 2:{
 		if(doesItGet1()){
-			fill1(bo);
-			t--;
-			if(j%2==1){
-				fill4(bo);
-			}else{
-				k--;
-				fill4(bo);
-				k++;
-			}
-			t++;
-			switching++;
+			fillRomboid1(bo);
 		}
 		if(doesItGet2()){
-			fill2(bo);
-			k--;
-			fill5(bo);
-			k++;
-			switching++;
+			fillRomboid2(bo);
 		}
 		break;
 	}	
 	case 3:{
 		if(doesItGet3()){
-			fill3(bo);
-			t++;
-			if(j%2==1){
-				fill6(bo);
-			}else{
-				k--;
-				fill6(bo);
-				k++;
-			}
-			t--;
-			switching++;
+			fillRomboid3(bo);
 		}
 		if(doesItGet2()){
-			fill2(bo);
-			k--;
-			fill5(bo);
-			k++;
-			switching++;
+			fillRomboid2(bo);
 		}
 		break;
 	}
 	case 4:{
 		if(doesItGet3()){
-			fill3(bo);
-			t++;
-			if(j%2==1){
-				fill6(bo);
-			}else{
-				k--;
-				fill6(bo);
-				k++;
-			}
-			t--;
-			switching++;
+			fillRomboid3(bo);
 		}
 		if(doesItGet4()){
-			fill4(bo);
-			t++;
-			if(j%2==1){
-				k++;
-				fill1(bo);
-				k--;
-			}else{
-				fill1(bo);
-			}
-			t--;
-			switching++;
+			fillRomboid4(bo);
 		}
 		break;
 	}	
 	case 5:{
 		if(doesItGet5()){
-			fill5(bo);
-			k++;
-			fill2(bo);
-			k--;
-			switching++;
+			fillRomboid5(bo);
 		}
 		if(doesItGet4()){
-			fill4(bo);
-			t++;
-			if(j%2==1){
-				k++;
-				fill1(bo);
-				k--;
-			}else{
-				fill1(bo);
-			}
-			t--;
-			switching++;
+			fillRomboid4(bo);
 		}
 		break;
 	}
 	case 6:{
 		if(doesItGet5()){
-			fill5(bo);
-			k++;
-			fill2(bo);
-			k--;
-			switching++;
+			fillRomboid5(bo);
 		}
 		if(doesItGet6()){
-			fill6(bo);
-			t--;
-			if(j%2==1){
-				k++;
-				fill3(bo);
-				k--;
-			}else{
-				fill3(bo);
-			}
-			t++;
-			switching++;
+			fillRomboid6(bo);
 		}
 		break;
 	}	
@@ -487,8 +391,34 @@ function doesItGet1(){
 			&& hexarray[i-1][j-1].line5==true 
 			&& hexarray[i][j].side1==false){
 				return true;
+			}else
+			if(i==0
+			&& hexarray[i][j].line1==true 
+			&& hexarray[i][j].line2==true 
+			&& hexarray[hex_counter-1][j-1].line4==true 
+			&& hexarray[hex_counter-1][j-1].line5==true 
+			&& hexarray[i][j].side1==false){
+				return true;
 			}
 		}
+	}else{
+		if(i==0 
+		&& hexarray[i][j].line1==true 
+		&& hexarray[i][j].line2==true 
+		&& hexarray[hex_counter-1][hex_counter-1].line4==true 
+		&& hexarray[hex_counter-1][hex_counter-1].line5==true 
+		&& hexarray[i][j].side1==false){
+			return true;
+		}else{
+			if(i!=0 
+			&& hexarray[i][j].line1==true 
+			&& hexarray[i][j].line2==true 
+			&& hexarray[i-1][hex_counter-1].line4==true 
+			&& hexarray[i-1][hex_counter-1].line5==true 
+			&& hexarray[i][j].side1==false){
+				return true;
+			}
+		}	
 	}
 	return false;
 }
@@ -501,8 +431,15 @@ function doesItGet2(){
 		&& hexarray[i-1][j].line6==true 
 		&& hexarray[i][j].side2==false){
 			return true;
-		}
-		
+		}	
+	}else{
+		if(hexarray[i][j].line2==true 
+		&& hexarray[i][j].line3==true 
+		&& hexarray[hex_counter-1][j].line5==true 
+		&& hexarray[hex_counter-1][j].line6==true 
+		&& hexarray[i][j].side2==false){
+			return true;
+		}	
 	}
 	return false;	
 }
@@ -525,7 +462,24 @@ function doesItGet3(){
 			&& hexarray[i-1][j+1].line6==true 
 			&& hexarray[i][j].side3==false){
 				return true;
+			}else{
+				if(i==0 
+				&& hexarray[i][j].line3==true 
+				&& hexarray[i][j].line4==true 
+				&& hexarray[hex_counter-1][j+1].line1==true 
+				&& hexarray[hex_counter-1][j+1].line6==true 
+				&& hexarray[i][j].side3==false){
+					return true;
+				}
 			}
+		}
+	}else{
+		if(hexarray[i][j].line3==true 
+		&& hexarray[i][j].line4==true 
+		&& hexarray[i][0].line1==true 
+		&& hexarray[i][0].line6==true 
+		&& hexarray[i][j].side3==false){
+			return true;
 		}
 	}
 	return false;	
@@ -534,19 +488,46 @@ function doesItGet3(){
 function doesItGet4(){
 	if(j!=hex_counter-1){
 		if(j%2==1){
-			if(i!=hex_counter-1 
-			&& hexarray[i][j].line4==true 
-			&& hexarray[i][j].line5==true 
-			&& hexarray[i+1][j+1].line1==true 
-			&& hexarray[i+1][j+1].line2==true 
-			&& hexarray[i][j].side4==false){
-				return true;
+			if(i!=hex_counter-1){ 
+				if(hexarray[i][j].line4==true 
+				&& hexarray[i][j].line5==true 
+				&& hexarray[i+1][j+1].line1==true 
+				&& hexarray[i+1][j+1].line2==true 
+				&& hexarray[i][j].side4==false){
+					return true;
+				}
+			}else{
+				if(hexarray[i][j].line4==true 
+				&& hexarray[i][j].line5==true 
+				&& hexarray[0][j+1].line1==true 
+				&& hexarray[0][j+1].line2==true 
+				&& hexarray[i][j].side4==false){
+					return true;
+				}
 			}
 		}else{
 			if(hexarray[i][j].line4==true 
 			&& hexarray[i][j].line5==true 
 			&& hexarray[i][j+1].line1==true 
 			&& hexarray[i][j+1].line2==true 
+			&& hexarray[i][j].side4==false){
+				return true;
+			}
+		}
+	}else{
+		if(i!=hex_counter-1){
+			if(hexarray[i][j].line4==true 
+			&& hexarray[i][j].line5==true 
+			&& hexarray[i+1][0].line1==true 
+			&& hexarray[i+1][0].line2==true 
+			&& hexarray[i][j].side4==false){
+				return true;
+			}
+		}else{
+			if(hexarray[i][j].line4==true 
+			&& hexarray[i][j].line5==true 
+			&& hexarray[0][0].line1==true 
+			&& hexarray[0][0].line2==true 
 			&& hexarray[i][j].side4==false){
 				return true;
 			}
@@ -564,6 +545,14 @@ function doesItGet5(){
 		&& hexarray[i][j].side5==false){
 			return true;
 		}	
+	}else{
+		if(hexarray[i][j].line5==true 
+		&& hexarray[i][j].line6==true 
+		&& hexarray[0][j].line2==true 
+		&& hexarray[0][j].line3==true 
+		&& hexarray[i][j].side5==false){
+			return true;
+		}
 	}
 	return false;		
 }
@@ -571,13 +560,22 @@ function doesItGet5(){
 function doesItGet6(){
 	if(j!=0){
 		if(j%2==1){
-			if(i!=hex_counter-1
-			&& hexarray[i][j].line1==true 
-			&& hexarray[i][j].line6==true 
-			&& hexarray[i+1][j-1].line4==true 
-			&& hexarray[i+1][j-1].line3==true 
-			&& hexarray[i][j].side6==false){
-				return true;
+			if(i!=hex_counter-1){
+				if(hexarray[i][j].line1==true 
+				&& hexarray[i][j].line6==true 
+				&& hexarray[i+1][j-1].line4==true 
+				&& hexarray[i+1][j-1].line3==true 
+				&& hexarray[i][j].side6==false){
+					return true;
+				}
+			}else{
+				if(hexarray[i][j].line1==true 
+				&& hexarray[i][j].line6==true 
+				&& hexarray[0][j-1].line4==true 
+				&& hexarray[0][j-1].line3==true 
+				&& hexarray[i][j].side6==false){
+					return true;
+				}
 			}
 		}else{
 			if(hexarray[i][j].line1==true 
@@ -587,6 +585,14 @@ function doesItGet6(){
 			&& hexarray[i][j].side6==false){
 				return true;
 			}
+		}
+	}else{
+		if(hexarray[i][j].line1==true 
+		&& hexarray[i][j].line6==true 
+		&& hexarray[i][hex_counter-1].line3==true 
+		&& hexarray[i][hex_counter-1].line4==true 
+		&& hexarray[i][j].side6==false){
+			return true;
 		}
 	}
 	return false;	
@@ -644,6 +650,194 @@ function fill6(bo){
 	bo.lineTo(dotx+hex_width,doty-hex_length/2);
 	bo.lineTo(dotx,doty-hex_length/2-hex_height);
 	bo.fill();
+}
+
+function fillRomboid1(bo){
+	fill1(bo);
+	if(j!=0){
+		if(i!=0){
+			t--;
+			if(j%2==1){
+				fill4(bo);
+			}else{
+				k--;
+				fill4(bo);
+				k++;
+			}
+			t++;
+			switching++;
+		}else{
+			t--;
+			if(j%2==1){
+				fill4(bo);
+			}else{
+				k=hex_counter-1;
+				fill4(bo);
+				k=0;
+			}
+			t++;
+			switching++;
+		}
+	}else{
+		if(i!=0){
+			t=hex_counter-1;
+			k--;
+			fill4(bo);
+			k++;
+			t=0;
+			switching++;
+		}else{
+			t=hex_counter-1;
+			k=hex_counter-1;
+			fill4(bo);
+			k=0;
+			t=0;
+			switching++;
+		}
+	}
+}
+
+function fillRomboid2(bo){
+	fill2(bo);
+	if(i!=0){
+		k--;
+		fill5(bo);
+		k++;
+		switching++;
+	}else{
+		k=hex_counter-1;
+		fill5(bo);
+		k=0;
+		switching++;
+	}
+}
+
+function fillRomboid3(bo){
+	fill3(bo);
+	if(j!=hex_counter-1){
+		if(i!=0){
+			t++;
+			if(j%2==1){
+				fill6(bo);
+			}else{
+				k--;
+				fill6(bo);
+				k++;
+			}
+			t--;
+			switching++;
+		}else{
+			t++;
+			if(j%2==1){
+				fill6(bo);
+			}else{
+				k=hex_counter-1;
+				fill6(bo);
+				k=0;
+			}
+			t--;
+			switching++;
+		}
+	}else{
+		t=0;
+		fill6(bo);
+		t=hex_counter-1;
+		switching++;
+	}
+}
+
+function fillRomboid4(bo){
+	fill4(bo);
+	if(j!=hex_counter-1){
+		if(i!=hex_counter-1){
+			t++;
+			if(j%2==1){
+				k++;
+				fill1(bo);
+				k--;
+			}else{
+				fill1(bo);
+			}
+			t--;
+			switching++;
+		}else{
+			t++;
+			if(j%2==1){
+				k=0;
+				fill1(bo);
+				k=hex_counter-1;
+			}else{
+				fill1(bo);
+			}
+			t--;
+			switching++;
+		}
+	}else{
+		if(i!=hex_counter-1){
+			t=0;
+			k++;
+			fill1(bo);
+			k--;
+			t=hex_counter-1;
+			switching++;
+		}else{
+			t=0;
+			k=0;
+			fill1(bo);
+			k=hex_counter-1;
+			t=hex_counter-1;
+			switching++;
+		}
+	}
+}
+
+function fillRomboid5(bo){
+	fill5(bo);
+	if(i!=hex_counter-1){
+		k++;
+		fill2(bo);
+		k--;
+		switching++;
+	}else{
+		k=0;
+		fill2(bo);
+		k=hex_counter-1;
+		switching++;
+	}
+}
+
+function fillRomboid6(bo){
+	fill6(bo);
+	if(j!=0){
+		if(i!=hex_counter-1){
+			t--;
+			if(j%2==1){
+				k++;
+				fill3(bo);
+				k--;
+			}else{
+				fill3(bo);
+			}
+			t++;
+			switching++;
+		}else{
+			t--;
+			if(j%2==1){
+				k=0;
+				fill3(bo);
+				k=hex_counter-1;
+			}else{
+				fill3(bo);
+			}
+			t++;
+			switching++;
+		}
+	}else{
+		t=hex_counter-1;
+		fill3(bo);
+		t=0;
+		switching++;
+	}
 }
 
 function switchPlayer(){
