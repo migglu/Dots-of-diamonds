@@ -56,7 +56,6 @@ function makeNewChatbox(id)
 	newDiv.setAttribute('class', 'chatbox');
 	document.getElementById('chats').appendChild(newDiv);
 	chats[id] = newDiv;
-	console.log(chats);
 }
 
 function setChatToForeground(value)
@@ -93,6 +92,7 @@ function setChatsToBackground()
 function setConversationTo(value)
 {
 	conversationId = value;
+	resetCounter(document.getElementById('counter'));
 	setChatToForeground(value);
 }
 
@@ -105,6 +105,7 @@ function getIndexFromField(field)
 function setConversation(field)
 {
 	conversationId = getIndexFromField(field);
+	resetCounter(document.getElementById('counter_' + conversationId));
 	setChatToForeground(conversationId);
 }
 
@@ -123,6 +124,27 @@ function rewriteLoggedInUsers() {
 	}
 }
 
+function resetCounter(field)
+{
+	if(field != undefined)
+	{
+		field.innerHTML = '';
+	}
+}
+
+function incrementCounter(field)
+{
+	var count = field.innerHTML.substring(1, field.innerHTML.length-1);
+	if(!isNaN(count))
+	{
+		count++;
+	} else {
+		count = 1;
+	}
+	
+	field.innerHTML = '(' + count + ')';
+}
+
 function addChatListeners() {
 	
 	chat.on('publicMessage', function (data) {
@@ -134,11 +156,16 @@ function addChatListeners() {
 		{
 			makeNewChatbox(data.id);
 		}
+		
+		if(conversationId != data.id)
+		{
+			incrementCounter(document.getElementById('counter_' + data.id));
+		}
 		setNewMessage(chats[data.id], data.user, data.msg);
 	});
 	
 	chat.on('loggedList', function(array) {
-		loggedInUsers = array;
+		loggedInUsers = array; //FIXME - discards all 'new message' notifications :(
 		rewriteLoggedInUsers();
 	});
 }
