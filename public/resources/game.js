@@ -1,5 +1,5 @@
-var draw_x=0,draw_y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,player=1,player1_points=0,player2_points=0,switching=0,
-	d=0,a=0,b=0,c=0,ratx=0,raty=0,dotx=0,doty=0,k=0,t=0,in_side_of_hex=0,line=0,hexarray;
+var draw_x,draw_y,hex_counter,hex_length,i,j,hex_height,hex_width,player,player1_points,player2_points,switching,d,a,b,c,ratx,raty,dotx,doty,k,
+	t,in_side_of_hex,line,hexarray;
 
 function clearField() {
 	var canvas = document.getElementById("dots_game");
@@ -17,19 +17,7 @@ function field(size){
 	var height=document.getElementById("dots_game").height;
 	var bo=c.getContext("2d");
 	bo.strokeStyle="#c0c0c0";
-	switch(size){
-	case 1:{
-		hex_counter=6;
-		break;	
-	}
-	case 2:{
-		hex_counter=10;
-		break;
-	}
-	case 3:{hex_counter=16;
-		break;
-	}
-	}	
+	hex_counter=size*4;
 	whl(width,height);
 	draw_y=hex_height;
 	for(i=0;i<(hex_counter/2);i++){
@@ -230,56 +218,57 @@ function drawLine(e){
 	whl(width,height);
 	mouseLine(ratx,raty,bo);
 	bo.moveTo(dotx,doty);
-	
-	switch(line){
-	case 1:{
-		if(hexarray[i][j].line1!=true){
-			hexarray[i][j].line1=true;	
-			bo.lineTo(dotx,doty-hex_height-hex_length/2);
-			switchPlayer();
+	if(i>=0 && j>=0 && i<=hex_counter-1 && j<=hex_counter-1){
+		switch(line){
+		case 1:{
+			if(hexarray[i][j].line1!=true){
+				hexarray[i][j].line1=true;	
+				bo.lineTo(dotx,doty-hex_height-hex_length/2);
+				switchPlayer();
+			}
+			break;
 		}
-		break;
-	}
-	case 2:{
-		if(hexarray[i][j].line2!=true){
-			hexarray[i][j].line2=true;	
-			bo.lineTo(dotx-hex_width,doty-hex_length/2);
-			switchPlayer();
+		case 2:{
+			if(hexarray[i][j].line2!=true){
+				hexarray[i][j].line2=true;	
+				bo.lineTo(dotx-hex_width,doty-hex_length/2);
+				switchPlayer();
+			}
+			break;
+		}	
+		case 3:{
+			if(hexarray[i][j].line3!=true){
+				hexarray[i][j].line3=true;	
+				bo.lineTo(dotx-hex_width,doty+hex_length/2);
+				switchPlayer();
+			}
+			break;
 		}
-		break;
-	}	
-	case 3:{
-		if(hexarray[i][j].line3!=true){
-			hexarray[i][j].line3=true;	
-			bo.lineTo(dotx-hex_width,doty+hex_length/2);
-			switchPlayer();
+		case 4:{
+			if(hexarray[i][j].line4!=true){
+				hexarray[i][j].line4=true;	
+				bo.lineTo(dotx,doty+hex_height+hex_length/2);
+				switchPlayer();
+			}
+			break;
+		}	
+		case 5:{
+			if(hexarray[i][j].line5!=true){
+				hexarray[i][j].line5=true;	
+				bo.lineTo(dotx+hex_width,doty+hex_length/2);
+				switchPlayer();
+			}
+			break;
 		}
-		break;
-	}
-	case 4:{
-		if(hexarray[i][j].line4!=true){
-			hexarray[i][j].line4=true;	
-			bo.lineTo(dotx,doty+hex_height+hex_length/2);
-			switchPlayer();
+		case 6:{
+			if(hexarray[i][j].line6!=true){
+				hexarray[i][j].line6=true;	
+				bo.lineTo(dotx+hex_width,doty-hex_length/2);
+				switchPlayer();
+			}
+			break;
+		}	
 		}
-		break;
-	}	
-	case 5:{
-		if(hexarray[i][j].line5!=true){
-			hexarray[i][j].line5=true;	
-			bo.lineTo(dotx+hex_width,doty+hex_length/2);
-			switchPlayer();
-		}
-		break;
-	}
-	case 6:{
-		if(hexarray[i][j].line6!=true){
-			hexarray[i][j].line6=true;	
-			bo.lineTo(dotx+hex_width,doty-hex_length/2);
-			switchPlayer();
-		}
-		break;
-	}	
 	}
 	
 	fillTaken(bo);
@@ -289,9 +278,11 @@ function drawLine(e){
 			player1_points+=switching;
 		}else{
 			player2_points+=switching;
-		}		
-		console.log("player1: " + player1_points)
-		console.log("player2: " + player2_points)
+		}
+		if(player1_points+player2_points==hex_counter*hex_counter*3){
+			console.log("player1: " + player1_points)
+			console.log("player2: " + player2_points)
+		}
 		switching=0;
 	}
 	
