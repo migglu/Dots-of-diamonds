@@ -26,6 +26,7 @@ function emitPublic(field)
 function emitPrivate(field, id)
 {
 	chat.emit('privateMessage', {'msg':field.value, 'token': token, 'id': id});
+	setNewMessage(document.getElementById('chat_' + id), 'Me', field.value);
 	clearField(field);
 }
 
