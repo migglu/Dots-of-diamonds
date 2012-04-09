@@ -52,16 +52,54 @@ input:hover
 	clear: both;
 }
 
-#chat
+#chats
 {
+	border: 3px red solid;
+	width: auto;
+	float: left;
+	width: 540px;
+	height: 440px;
+	margin-left: 30px;
+}
+
+.chatbox
+{
+	position: absolute;
+	z-index: 0;
 	width: 500px;
 	height: 400px;
 	overflow: auto;
-	float: left;
+	*float: left;
 	background-color: #eee;
 	border-radius: 7px;
 	margin: 10px;
 	padding: 10px;
+}
+
+#chat
+{
+	z-index: 1;
+}
+
+.userElement
+{
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 7px;
+}
+
+.userElement:last-child
+{
+	padding-bottom: 5px;
+}
+
+#public
+{
+	float: left;
+	border-radius: 7px;
+	padding: 10px;
+	margin: 10px;
 }
 
 #users

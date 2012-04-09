@@ -51,7 +51,7 @@ function logout(token) {
 	});
 }
 
-function register (user, mail, pass, response, request) {
+function registerUser(user, mail, pass, response, request) {
 	db.connect(function(error)
 	{
 		if (error) {
@@ -98,7 +98,7 @@ function checkUser(user, mail, pass, response, request)
 				statics.serveFile('register_error.html', response, request);
 			} else
 			{
-				register(user, mail, pass, response, request);
+				registerUser(user, mail, pass, response, request);
 			}
 		});
 		
@@ -154,10 +154,6 @@ function loginSocket(user, pass, socket, duplicateCallback)
 						console.log("UPDATE error: " + error);
 					}
 					console.log("callback made...");
-					//response.writeHead(200, {"Content-Type": "text/plain"});
-					//response.write("Logged in! :)");
-					//response.end();
-					//var socket = io.getSocket();
 					socket.set('token', token, function() {
 						socket.emit('login', {"token": token});
 					});
@@ -168,9 +164,8 @@ function loginSocket(user, pass, socket, duplicateCallback)
 	
 }
 
-function getUsername(token, register, socket)
+function getUsername(token, loginFunction, socket)
 {
-	console.log(token);
 	db.connect(function (error) {
 		if (error) {
 			console.log("AUTHENTICATION error: " + error);
@@ -178,7 +173,7 @@ function getUsername(token, register, socket)
 		}
 		
 		this.query()
-		.select('name')
+		.select('id, name')
 		.from('dd_users')
 		.where('token = ?', [token])
 		.execute(function (error, rows, cols) {
@@ -187,8 +182,9 @@ function getUsername(token, register, socket)
 				console.log("TOKEN error: [CRITICAL ERROR] " + error);
 				return;
 			}
+			loginFunction(rows[0].name, rows[0].id, token, socket);
 			
-			register(rows[0].name, token, socket);
+			
 			
 		});
 	});

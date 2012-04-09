@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8" />
 		<title>Dots of Diamods - Chat</title>
 		<link rel="stylesheet" href="resources/style.css" />
 		<script src="/resources/cookies.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/resources/authenticate.js"></script>
-		<script src="/resources/chat.js"></script>
 	</head>
 	
 	<body>
 		<div id="wrapper">
 			Status: <div id="status">Maybe online</div>
-			<div id="chat" ></div>
-			<div id="users" ></div>
+			<div id="chats" >
+				<div class="chatbox" id="chat" ></div>
+			</div>
+			<div id="public" onclick="setConversationTo(-1);">Общ</div>
+			<div id="users"></div>
 			<div id="chatControls">
 				<input type="button" id="logout" value="Logout" onclick="logout();" ></input>
-				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
+				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this, conversationId)"></input>
 				<input type="button" value="send" onclick="emit(document.getElementById('message'));" ></input>
 			</div>
 		</div>
+		<script src="/resources/chat.js"></script>
 
 	</body>
 </html>

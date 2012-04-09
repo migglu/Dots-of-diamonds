@@ -1,47 +1,32 @@
 var io = require('./socket');
 var db = require('./database');
 
-var loggedIn = {};
+var loggedInByToken = {};
+var loggedInById = {};
 
 
 //function 
 
 function setGlobalMessageListener(socket)
 {
+	
 	socket.on('publicMessage', function(msg) {
-		//~ socket.get('token', function (err, data) {
-			//~ console.log("socket token = " + data);
-			//~ if(err)
-			//~ {
-				//~ console.log("Not logged in...");
-				//~ return;
-			//~ }
-			//~ console.log("AAAAAAAAAAAAAAA");
-			//~ console.log(loggedIn);
-			//~ console.log("AAAAAAAAAAAAAAA");
-			//~ if(data == msg.token) //fixme loggedIn for?
-			//~ {
-				//~ if(loggedIn[msg.token] === undefined)
-				//~ {
-					//~ socket.on('publicMessage', null);
-				//~ } else {
-					if(loggedIn[msg.token] === undefined)
-					{
-						console.log("UNAUTHORIZED MESSAGE : " + msg.msg);
-						socket.on('publicMessage', function() {});
-					} else {
-						if(msg.msg.trim() != '')
-						{
-							io.broadcastToChat({"msg": msg.msg, "user": loggedIn[msg.token]});
-						}
-					}
-				//~ }
-			//~ }
-		//~ });
+		
+		
+		if(loggedInByToken[msg.token] === undefined)
+		{
+			console.log("UNAUTHORIZED MESSAGE : " + msg.msg);
+			socket.on('publicMessage', function() {});
+		} else {
+			if(msg.msg.trim() != '')
+			{
+				io.broadcastToChat({"msg": msg.msg, "user": loggedInByToken[msg.token].name});
+			}
+		}
 	});
 	
 	socket.on('logout', function(msg) {
-		socket.get('token', function (err, data) {
+		socket.get('token', function (err, token) {
 			if(err)
 			{
 				console.log("logout error..");
@@ -50,44 +35,73 @@ function setGlobalMessageListener(socket)
 			
 			if(data == msg.token)
 			{
-				logout(data);
+				socket.get('userid', function (err, id) {	
+					logout(token, id);
+				});
 			}
 		});
 	});
 	
 	socket.on('disconnect', function() {
-		socket.get('token', function (err, data) {
+		socket.get('token', function (err, token) {
 			if(err) {
 				console.log("logout error..");
 				return;
 			}
-			logout(data);
+			
+			socket.get('userid', function (err, id) {	
+				logout(token, id);
+			});
 		});
 	});
 }
 
+function setPrivateMessageListener(socket)
+{
+	socket.on('privateMessage', function (message) {
+		if(loggedInByToken[message.token] === undefined)
+		{
+			console.log("UNAUTHORIZED PRIVATE MESSAGE : " + message.msg);
+			socket.on('privateMessage', function() {});
+		} else {
+			if(message.id != undefined && message.id != null && loggedInById[message.id] != undefined) {
+				loggedInById[message.id].emit('privateMessage', { 'msg': message.msg, 
+																	'user': loggedInByToken[message.token].name, 
+																	'id': loggedInByToken[message.token].id });
+			}
+		}
+	});
+	
+}
 
-function logout(token) {
-	delete loggedIn[token];
+
+function logout(token, id) {
+	delete loggedInByToken[token];
+	delete loggedInById[id];
 	sendUserNames();
 	db.logout(token);
 }
 
-function setLoggedIn(name, token, socket)
+function setLoggedIn(name, id, token, socket)
 {
-	loggedIn[token] = name;
+	loggedInByToken[token] = {'name':name, 'id': id};
+	loggedInById[id] = socket;
+	
 	socket.set('token', token, function() {
-		console.log(loggedIn);
-		setGlobalMessageListener(socket);
+		socket.set('userid', id, function() {
+			setGlobalMessageListener(socket);
+			setPrivateMessageListener(socket);
+		});
 	});
+	
 	sendUserNames();
 }
 
 function sendUserNames() {
 	var key;
 	var names = [];
-	for (key in loggedIn) {
-		names.push(loggedIn[key]);
+	for (key in loggedInByToken) {
+		names.push(loggedInByToken[key]);
 	}
 	io.broadcastLoggedIn(names);
 }

@@ -25,8 +25,7 @@ function setupLogin()
 		socket.on('login', function (data) {
 			var user = data.user;
 			var pass = data.pass;
-			console.log("User = " + user);
-			console.log("Pass = " + pass);
+			
 			db.loginSocket(user, pass, socket, chat.logout);
 		});
 	});
@@ -36,10 +35,7 @@ function setupChat()
 {
 	io.of('/chat').on('connection', function (socket) {
 		socket.on('auth', function (token) {
-			console.log('token.token = ' + token.token);
-			
 			db.getUsername(token.token, chat.setLoggedIn, socket);
-			
 		});
 	});
 }
