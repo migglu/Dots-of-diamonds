@@ -3,25 +3,41 @@ var db = require('./database');
 
 var loggedInByToken = {};
 var loggedInById = {};
+var loggedInByName = {}; //I hate you, Valyo and Bankin...
 
-
-//function 
 
 function setGlobalMessageListener(socket)
 {
 	
 	socket.on('publicMessage', function(msg) {
-		
-		
 		if(loggedInByToken[msg.token] === undefined)
 		{
+			socket.get('token', function(err, token) {
+				if(!err)
+				{
+					socket.get('userId', function (err, id) {
+						if(!err)
+						{
+							safeLogout(socket, token, id);
+						}
+					});
+				}
+			});
+			
 			console.log("UNAUTHORIZED MESSAGE : " + msg.msg);
-			socket.on('publicMessage', function() {});
 		} else {
-			if(msg.msg.trim() != '')
-			{
-				io.broadcastToChat({"msg": msg.msg, "user": loggedInByToken[msg.token].name});
-			}
+			socket.get('token', function (err, token) {
+				socket.get('userId', function(err1, id) {
+					if (msg.token != token || err || err1) {
+						safeLogout(socket, token, id);
+					} else {
+						if(msg.msg.trim() != '')
+						{
+							io.broadcastToChat({"msg": msg.msg, "user": loggedInByToken[msg.token].name});
+						}
+					}
+				});
+			});
 		}
 	});
 	
@@ -33,10 +49,11 @@ function setGlobalMessageListener(socket)
 				return;
 			}
 			
-			if(data == msg.token)
-			{
-				socket.get('userid', function (err, id) {	
-					logout(token, id);
+			if(token != msg.token) {
+				socket.get('userid', function (err, id) {
+					if(!err) {
+						logoutAll(token, id);
+					}
 				});
 			}
 		});
@@ -49,8 +66,12 @@ function setGlobalMessageListener(socket)
 				return;
 			}
 			
-			socket.get('userid', function (err, id) {	
-				logout(token, id);
+			socket.get('userid', function (err, id) {
+				if(err) 
+				{
+					console.log('logout error.. ');
+				}
+				safeLogout(socket, token, id);
 			});
 		});
 	});
@@ -62,12 +83,14 @@ function setPrivateMessageListener(socket)
 		if(loggedInByToken[message.token] === undefined)
 		{
 			console.log("UNAUTHORIZED PRIVATE MESSAGE : " + message.msg);
-			socket.on('privateMessage', function() {});
 		} else {
 			if(message.id != undefined && message.id != null && loggedInById[message.id] != undefined) {
-				loggedInById[message.id].emit('privateMessage', { 'msg': message.msg, 
-																	'user': loggedInByToken[message.token].name, 
-																	'id': loggedInByToken[message.token].id });
+				for(var key in loggedInById[message.id])
+				{
+					loggedInById[message.id][key].emit('privateMessage', { 'msg': message.msg, 
+																		'user': loggedInByToken[message.token].name, 
+																		'id': loggedInByToken[message.token].id });
+				}
 			}
 		}
 	});
@@ -75,8 +98,48 @@ function setPrivateMessageListener(socket)
 }
 
 
-function logout(token, id) {
+function safeLogout(socket, token, id)
+{
+	var name;
+	if(loggedInByToken[token] != undefined)
+	{
+		name = loggedInByToken[token].name;
+	}
+	if(socket != undefined && token != undefined && id != undefined && name != undefined)
+	{
+		if(loggedInByToken[token] != undefined && loggedInById[id] != undefined && loggedInByName[name] != undefined)
+		{
+			logout(socket, token, id, name);
+		}
+	}
+}
+
+function logout(socket, token, id, name) {
+	var index = loggedInByName[name].indexOf(socket);
+	
+	delete loggedInByName[name][index];
+	
+	index = loggedInById[id].indexOf(socket);
+	delete loggedInById[id][index];
+	
+	if(loggedInByName[name].length == 0)
+	{
+		delete loggedInByToken[token];
+		delete loggedInByName[name];
+		delete loggedInById[id];
+		sendUserNames();
+		db.logout(token);
+	}
+}
+
+function logoutAll(token, id, name) {
+	if(name == undefined && loggedInByToken[token] != undefined)
+	{
+		name = loggedInByToken[token].name;
+	}
+	
 	delete loggedInByToken[token];
+	delete loggedInByName[name];
 	delete loggedInById[id];
 	sendUserNames();
 	db.logout(token);
@@ -85,10 +148,21 @@ function logout(token, id) {
 function setLoggedIn(name, id, token, socket)
 {
 	loggedInByToken[token] = {'name':name, 'id': id};
-	loggedInById[id] = socket;
+	if(loggedInByName[name] == undefined)
+	{
+		loggedInByName[name]= new Array();
+	}
+	loggedInByName[name].push(socket);
+	
+	if(loggedInById[id] == undefined)
+	{
+		loggedInById[id] = new Array();
+	}
+	loggedInById[id].push(socket);
 	
 	socket.set('token', token, function() {
 		socket.set('userid', id, function() {
+			socket.emit('ok', {'error': 0});
 			setGlobalMessageListener(socket);
 			setPrivateMessageListener(socket);
 		});
@@ -98,16 +172,30 @@ function setLoggedIn(name, id, token, socket)
 }
 
 function sendUserNames() {
-	var key;
 	var names = [];
-	for (key in loggedInByToken) {
-		names.push(loggedInByToken[key]);
+	for (var key in loggedInByToken) {
+		if(names.indexOf(loggedInByToken[key]) < 0)
+		{
+			names.push(loggedInByToken[key]);
+		}
 	}
 	io.broadcastLoggedIn(names);
 }
 
-
+function chatAuthListener(socket) {
+	socket.on('auth', function (token) {
+		if(token.token == undefined)
+		{
+			socket.emit('ok', {'error': 'No token...'});
+			console.log('UNDEFINED TOKEN...');
+			return;
+		}
+		db.getUsername(token.token, setLoggedIn, socket);
+	});
+}
 
 exports.setLoggedIn = setLoggedIn;
 exports.logout = logout;
+exports.logoutAll = logoutAll;
+exports.chatAuthListener = chatAuthListener;
 			

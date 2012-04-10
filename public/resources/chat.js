@@ -4,6 +4,7 @@ var loggedInUsers = null;
 var chats = {'-1': document.getElementById('chat')};
 var highlightColor = '#dde';
 var normalColor = '#eee';
+var addedListeners = false;
 
 function emit(field) {
 	if(conversationId == -1) {
@@ -11,6 +12,7 @@ function emit(field) {
 	} else {
 		emitPrivate(field, conversationId);
 	}
+	console.log('Emitting a message!');
 }
 
 function clearField(field) {
@@ -19,20 +21,20 @@ function clearField(field) {
 
 function emitPublic(field)
 {
-	chat.emit('publicMessage', {"msg":field.value, "token": token});
+	chat.emit('publicMessage', {"msg":field.value, "token": getCookie("Dots-of-Diamonds")});
 	clearField(field);
 }
 
 function emitPrivate(field, id)
 {
-	chat.emit('privateMessage', {'msg':field.value, 'token': token, 'id': id});
+	chat.emit('privateMessage', {'msg':field.value, 'token': getCookie("Dots-of-Diamonds"), 'id': id});
 	setNewMessage(document.getElementById('chat_' + id), 'Me', field.value);
 	clearField(field);
 }
 
 function logout()
 {
-	chat.emit('logout', {"token": token});
+	chat.emit('logout', {"token": getCookie("Dots-of-Diamonds")});
 	window.location = '/index';
 	deleteCookie("Dots-of-Diamonds");
 }
@@ -149,6 +151,7 @@ function incrementCounter(field)
 function addChatListeners() {
 	
 	chat.on('publicMessage', function (data) {
+		console.log('Recieved a message: ' + data.msg);
 		setNewMessage(chats['-1'], data.user, data.msg);
 	});
 	
@@ -169,6 +172,8 @@ function addChatListeners() {
 		loggedInUsers = array; //FIXME - discards all 'new message' notifications :(
 		rewriteLoggedInUsers();
 	});
+	
+	addedListeners = true;
 }
 
 setChatToForeground(-1);

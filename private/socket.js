@@ -25,19 +25,17 @@ function setupLogin()
 		socket.on('login', function (data) {
 			var user = data.user;
 			var pass = data.pass;
-			
-			db.loginSocket(user, pass, socket, chat.logout);
+			if(user != null && pass != null)
+			{
+				db.loginSocket(user, pass, socket, chat.logoutAll);
+			}
 		});
 	});
 }
 
 function setupChat()
 {
-	io.of('/chat').on('connection', function (socket) {
-		socket.on('auth', function (token) {
-			db.getUsername(token.token, chat.setLoggedIn, socket);
-		});
-	});
+	io.of('/chat').on('connection', chat.chatAuthListener);
 }
 
 

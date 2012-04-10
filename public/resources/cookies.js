@@ -18,6 +18,7 @@ function getCookie(cookieName)
 			return unescape(data);
 		}
 	}
+	return '';
 }
 
 function deleteCookie(name)

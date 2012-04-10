@@ -7,9 +7,8 @@ var db = new mysql.Database({
 	});
 var statics = require('./statics');
 var crypto = require('crypto');
+var io = require('./socket');
 
-
-var io = require('./socket')
 
 function resetLoggedIn()
 {
@@ -131,9 +130,10 @@ function loginSocket(user, pass, socket, duplicateCallback)
 			
 			if(rows[0].loggedin == 1)
 			{
-				duplicateCallback(rows[0].token);
+				duplicateCallback(rows[0].token, rows[0].id);
 			}
 			var token = rows[0].id + '' + rows[0].pass + '' + new Date().toString();
+			console.log(token);
 			
 			var hash = crypto.createHash('sha256'); //BLOCKIIIIIIIIIIIIIIING, FIX AT ALL COST!
 			hash.update(token);
@@ -152,10 +152,12 @@ function loginSocket(user, pass, socket, duplicateCallback)
 				.execute(function (error, result) {
 					if(error) {
 						console.log("UPDATE error: " + error);
+						return;
 					}
-					console.log("callback made...");
+					
 					socket.set('token', token, function() {
 						socket.emit('login', {"token": token});
+						socket.emit('ok', {'error': 0});
 					});
 				});
 			});
@@ -179,6 +181,7 @@ function getUsername(token, loginFunction, socket)
 		.execute(function (error, rows, cols) {
 			if(error || rows[0] == undefined)
 			{
+				socket.emit('ok', {'error': 'Unknown token' + token});
 				console.log("TOKEN error: [CRITICAL ERROR] " + error);
 				return;
 			}

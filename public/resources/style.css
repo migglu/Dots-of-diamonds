@@ -69,7 +69,6 @@ input:hover
 	width: 500px;
 	height: 400px;
 	overflow: auto;
-	*float: left;
 	background-color: #eee;
 	border-radius: 7px;
 	margin: 10px;
