@@ -9,6 +9,39 @@ var statics = require('./statics');
 var crypto = require('crypto');
 var io = require('./socket');
 
+function initGame(id1, id2, callback)
+{
+	db.connect(function (err) {
+		if(err) {
+			console.log('CONNECTION error: ' + err);
+			return;
+		}
+		
+		this.query()
+		.update('dd_users')
+		.set({'ingame': 1})
+		.where('id = ? OR id = ?', [id1, id2])
+		.execute(function (err, res) {
+			if(err)
+			{
+				console.log('Initializing game error: ' + err);
+				return;		
+			}
+		});
+		
+		this.query()
+		.insert('dd_games', ['', id1, id2, '', new Date()])
+		.execute(function (err, res) {
+			if(err) {
+				console.log('Game initialization error...');
+				return;
+			}
+			callback(res.id);
+		});
+	});
+		
+}
+
 
 function resetLoggedIn()
 {
@@ -198,3 +231,4 @@ exports.loginSocket = loginSocket;
 exports.getUsername = getUsername;
 exports.logout = logout;
 exports.resetLoggedIn = resetLoggedIn;
+exports.initGame = initGame;

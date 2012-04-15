@@ -41,6 +41,34 @@ function setupChat()
 
 
 
+function sendGameStart(socket)
+{
+	socket.emit('gameStart', {});
+}
+
+function sendTurn(socket)
+{
+	socket.emit('turnAck', {});
+}
+
+function sendWait(socket)
+{
+	socket.emit('wait', {});
+}
+
+function sendGameEnd(socket)
+{
+	socket.emit('gameEnd', {});
+}
+
+
+
+
+
 exports.connect = connect;
 exports.broadcastToChat = broadcastToChat;
 exports.broadcastLoggedIn = broadcastLoggedIn;
+exports.sendGameStart = sendGameStart;
+exports.sendTurn = sendTurn;
+exports.sendWait = sendWait;
+exports.sendGameEnd = sendGameEnd;

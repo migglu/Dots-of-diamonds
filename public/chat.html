@@ -21,6 +21,7 @@
 				<input type="button" id="logout" value="Logout" onclick="logout();" ></input>
 				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this, conversationId)"></input>
 				<input type="button" value="send" onclick="emit(document.getElementById('message'));" ></input>
+				<input type="button" value="newgame" onclick="startGame();" ></input>
 			</div>
 		</div>
 		<script src="/resources/chat.js"></script>

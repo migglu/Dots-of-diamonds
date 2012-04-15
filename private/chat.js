@@ -1,5 +1,6 @@
 var io = require('./socket');
 var db = require('./database');
+var game = require('./game');
 
 var loggedInByToken = {};
 var loggedInById = {};
@@ -8,6 +9,15 @@ var loggedInByName = {}; //I hate you, Valyo and Bankin...
 
 function setGlobalMessageListener(socket)
 {
+	socket.on('initGame', function(msg) {
+		if(isNaN(msg.id)) {
+			console.log('Initializing game error: ' + msg.id);
+			return;
+		}
+		var match = new game.Game(this, loggedInById[msg.id][0]);
+		match.initialize();
+		
+	});
 	
 	socket.on('publicMessage', function(msg) {
 		if(loggedInByToken[msg.token] === undefined)

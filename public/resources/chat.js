@@ -6,6 +6,10 @@ var highlightColor = '#dde';
 var normalColor = '#eee';
 var addedListeners = false;
 
+function startGame() {
+	chat.emit('initGame', {'id': 47});
+}
+
 function emit(field) {
 	if(conversationId == -1) {
 		emitPublic(field);
