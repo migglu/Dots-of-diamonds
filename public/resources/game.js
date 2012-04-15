@@ -181,6 +181,7 @@ function whereInHex(){
 	if(isItIn6()){
 		line=6;i=k;j=t;
 	}
+	return i,j,line;
 }
 
 function mouseLine(ratx,raty){
@@ -218,6 +219,31 @@ function drawLine(e){
 	whl(width,height);
 	mouseLine(ratx,raty,bo);
 	bo.moveTo(dotx,doty);
+	
+	theLine(i,j,line);
+	
+	fillTaken(bo);
+	if(switching){
+		switchPlayer();
+		if(player==1){
+			player1_points+=switching;
+		}else{
+			player2_points+=switching;
+		}
+		if(player1_points+player2_points==hex_counter*hex_counter*3){
+			console.log("player1: " + player1_points)
+			console.log("player2: " + player2_points)
+		}
+		switching=0;
+	}
+	
+	bo.stroke();
+	bo.closePath();
+	
+	return player;
+}
+
+function theLine(i,j,line){
 	if(i>=0 && j>=0 && i<=hex_counter-1 && j<=hex_counter-1){
 		switch(line){
 		case 1:{
@@ -269,29 +295,8 @@ function drawLine(e){
 			break;
 		}	
 		}
-	}
-	
-	fillTaken(bo);
-	if(switching){
-		switchPlayer();
-		if(player==1){
-			player1_points+=switching;
-		}else{
-			player2_points+=switching;
-		}
-		if(player1_points+player2_points==hex_counter*hex_counter*3){
-			console.log("player1: " + player1_points)
-			console.log("player2: " + player2_points)
-		}
-		switching=0;
-	}
-	
-	bo.stroke();
-	bo.closePath();
-	
-	return player;
+	}	
 }
-
 
 //funkciq da zapulva rombche
 function fillTaken(bo){
