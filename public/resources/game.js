@@ -205,6 +205,7 @@ function takeAndLine(i,j,line,player){
 		bo.fillStyle="#ff0000";
 	}
 	hexParameters(width,height);
+	s=Math.floor(ratx/hex_width);
 	dotxy();
 	bo.moveTo(dotx,doty);
 	
