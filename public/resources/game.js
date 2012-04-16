@@ -18,7 +18,7 @@ function field(size){
 	var bo=c.getContext("2d");
 	bo.strokeStyle="#c0c0c0";
 	hex_counter=size*4;
-	whl(width,height);
+	hexParameters(width,height);
 	draw_y=hex_height;
 	for(i=0;i<(hex_counter/2);i++){
 		drawRow(bo);
@@ -190,6 +190,47 @@ function mouseLine(ratx,raty){
 	whereInHex();		
 }
 
+function takeAndLine(i,j,line){
+	k=i;t=j;
+	var g=document.getElementById("dots_game");
+	var width=document.getElementById("dots_game").width;
+	var height=document.getElementById("dots_game").height;
+	var bo=g.getContext("2d");
+	bo.beginPath();
+	if(player==1){
+		bo.strokeStyle="#0000ff";
+		bo.fillStyle="#0000ff";
+	}else if(player==2){
+		bo.strokeStyle="#ff0000";
+		bo.fillStyle="#ff0000";
+	}
+	hexParameters(width,height);
+	dotxy();
+	bo.moveTo(dotx,doty);
+	
+	theLine();
+	
+	fillTaken(bo);
+	if(switching){
+		switchPlayer();
+		if(player==1){
+			player1_points+=switching;
+		}else{
+			player2_points+=switching;
+		}
+		if(player1_points+player2_points==hex_counter*hex_counter*3){
+			console.log("player1: " + player1_points)
+			console.log("player2: " + player2_points)
+		}
+		switching=0;
+	}
+	
+	bo.stroke();
+	bo.closePath();
+	
+	return player;
+}
+
 //funkciq da chertae cherti
 function drawLine(e){
 	if (hexarray == undefined){
@@ -216,11 +257,11 @@ function drawLine(e){
 		bo.strokeStyle="#ff0000";
 		bo.fillStyle="#ff0000";
 	}
-	whl(width,height);
+	hexParameters(width,height);
 	mouseLine(ratx,raty,bo);
 	bo.moveTo(dotx,doty);
 	
-	theLine(i,j,line);
+	theLine(bo);
 	
 	fillTaken(bo);
 	if(switching){
@@ -243,7 +284,7 @@ function drawLine(e){
 	return player;
 }
 
-function theLine(i,j,line){
+function theLine(bo){
 	if(i>=0 && j>=0 && i<=hex_counter-1 && j<=hex_counter-1){
 		switch(line){
 		case 1:{
@@ -922,7 +963,7 @@ function getMouseXY(e) {
 	document.getElementById('coords').innerHTML = str;
 }
 
-function whl(width,height){
+function hexParameters(width,height){
 	hex_width=width/(2*hex_counter+1);
 	hex_width=Math.floor(hex_width);
 	
