@@ -190,8 +190,8 @@ function mouseLine(ratx,raty){
 	whereInHex();		
 }
 
-function takeAndLine(i,j,line,player){
-	k=i;t=j;
+function takeAndLine(f,g,h,l){
+	k=f;t=g;i=f;j=g;line=h;player=l;
 	var g=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
@@ -207,7 +207,6 @@ function takeAndLine(i,j,line,player){
 	hexParameters(width,height);
 	s=Math.floor(ratx/hex_width);
 	dotxy();
-	bo.moveTo(dotx,doty);
 	
 	theLine(bo);
 	
@@ -287,6 +286,7 @@ function drawLine(e){
 
 function theLine(bo){
 	if(i>=0 && j>=0 && i<=hex_counter-1 && j<=hex_counter-1){
+		bo.moveTo(dotx,doty);
 		switch(line){
 		case 1:{
 			if(hexarray[i][j].line1!=true){
@@ -337,6 +337,7 @@ function theLine(bo){
 			break;
 		}	
 		}
+		bo.stroke();
 	}	
 }
 
