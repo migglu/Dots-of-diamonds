@@ -190,7 +190,7 @@ function mouseLine(ratx,raty){
 	whereInHex();		
 }
 
-function takeAndLine(i,j,line){
+function takeAndLine(i,j,line,player){
 	k=i;t=j;
 	var g=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
@@ -208,7 +208,7 @@ function takeAndLine(i,j,line){
 	dotxy();
 	bo.moveTo(dotx,doty);
 	
-	theLine();
+	theLine(bo);
 	
 	fillTaken(bo);
 	if(switching){
