@@ -1,12 +1,17 @@
-var draw_x,draw_y,hex_counter,hex_length,i,j,hex_height,hex_width,player,player1_points,player2_points,switching,d,a,b,c,ratx,raty,dotx,doty,k,
-	t,in_side_of_hex,line,hexarray;
+var draw_x,draw_y,hex_counter,hex_length,i,j,hex_height,hex_width,player,switching,d,a,b,c,ratx,raty,dotx,doty,k,t,in_side_of_hex,line,hexarray;
+var	p1,p2;
 
 function clearField() {
 	var canvas = document.getElementById("dots_game");
 	canvas.width = canvas.width;
 	draw_x=0,draw_y=0,hex_counter=0,hex_length=0,i=0,j=0,hex_height=0,hex_width=0,player=1,player1_points=0,player2_points=0,switching=0,
 	d=0,a=0,b=0,c=0,ratx=0,raty=0,dotx=0,doty=0,k=0,t=0,in_side_of_hex=0,line=0;
-}	
+}
+
+function Player(color){
+	this.color=color;
+	this.points=0;
+}
 
 //iz4ertavane ne igralnoto pole
 function field(size){
@@ -38,7 +43,9 @@ function field(size){
 	bo.stroke();
 	bo.closePath();
 	
-	return hex_counter;
+	p1=new Player('#00FF00');
+	p2=new Player('#FF0000');
+	return hex_counter,p1,p2;
 }
 
 function drawRow(bo){
@@ -198,11 +205,11 @@ function takeAndLine(f,g,h,l){
 	var bo=g.getContext("2d");
 	bo.beginPath();
 	if(player==1){
-		bo.strokeStyle="#0000ff";
-		bo.fillStyle="#0000ff";
+		bo.strokeStyle=p1.color;
+		bo.fillStyle=p1.color;
 	}else if(player==2){
-		bo.strokeStyle="#ff0000";
-		bo.fillStyle="#ff0000";
+		bo.strokeStyle=p2.color;
+		bo.fillStyle=p2.color;
 	}
 	hexParameters(width,height);
 	s=Math.floor(ratx/hex_width);
@@ -214,11 +221,11 @@ function takeAndLine(f,g,h,l){
 	if(switching){
 		switchPlayer();
 		if(player==1){
-			player1_points+=switching;
+			p1.points+=switching;
 		}else{
-			player2_points+=switching;
+			p2.points+=switching;
 		}
-		if(player1_points+player2_points==hex_counter*hex_counter*3){
+		if(p1.points+p2.points==hex_counter*hex_counter*3){
 			console.log("player1: " + player1_points)
 			console.log("player2: " + player2_points)
 		}
@@ -251,11 +258,11 @@ function drawLine(e){
 	var bo=g.getContext("2d");
 	bo.beginPath();
 	if(player==1){
-		bo.strokeStyle="#0000ff";
-		bo.fillStyle="#0000ff";
+		bo.strokeStyle=p1.color;
+		bo.fillStyle=p1.color;
 	}else if(player==2){
-		bo.strokeStyle="#ff0000";
-		bo.fillStyle="#ff0000";
+		bo.strokeStyle=p2.color;
+		bo.fillStyle=p2.color;
 	}
 	hexParameters(width,height);
 	mouseLine(ratx,raty,bo);
@@ -267,11 +274,11 @@ function drawLine(e){
 	if(switching){
 		switchPlayer();
 		if(player==1){
-			player1_points+=switching;
+			p1.points+=switching;
 		}else{
-			player2_points+=switching;
+			p2.points+=switching;
 		}
-		if(player1_points+player2_points==hex_counter*hex_counter*3){
+		if(p1.points+p2.points==hex_counter*hex_counter*3){
 			console.log("player1: " + player1_points)
 			console.log("player2: " + player2_points)
 		}
