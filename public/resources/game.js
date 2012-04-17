@@ -1,5 +1,5 @@
-var draw_x,draw_y,hex_counter,hex_length,i,j,hex_height,hex_width,player,switching,d,a,b,c,ratx,raty,dotx,doty,k,t,in_side_of_hex,line,hexarray;
-var	p1,p2;
+var draw_x,draw_y,hex_counter,hex_length,i,j,hex_height,hex_width,player,switching,d,a,b,c,ratx,raty,dotx,doty,k,t,in_side_of_hex,line,hexarray,
+	p1,p2,hotseat=false;
 
 function clearField() {
 	var canvas = document.getElementById("dots_game");
@@ -887,10 +887,12 @@ function fillRomboid6(bo){
 }
 
 function switchPlayer(){
-	if(player==1){
-		player=2;
-	}else if(player==2){
-		player=1;
+	if(hotseat){
+		if(player==1){
+			player=2;
+		}else if(player==2){
+			player=1;
+		}
 	}
 }
 
