@@ -279,8 +279,8 @@ function drawLine(e){
 			p2.points+=switching;
 		}
 		if(p1.points+p2.points==hex_counter*hex_counter*3){
-			console.log("player1: " + player1_points)
-			console.log("player2: " + player2_points)
+			console.log("player1: " + p1.points)
+			console.log("player2: " + p2.points)
 		}
 		switching=0;
 	}
