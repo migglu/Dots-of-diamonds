@@ -16,6 +16,10 @@ gameSocket.on('connect', function () {
 	}
 });
 
+function sendMove( move ) {
+	gameSocket.emit( 'move', move );
+}
+
 var gameListenersAdded = false;
 function addGameListeners() {
 	if( gameListenersAdded )
@@ -31,6 +35,7 @@ function addGameListeners() {
 		if( data != undefined ) {
 			if( data.x != undefined && data.y != undefined && data.line != undefined && data.player != undefined )
 			{
+				console.log( 'drawing the LINEEEEEEE' );
 				takeAndLine( data.x, data.y, data.line, data.player );
 			}
 		}		
@@ -67,8 +72,11 @@ function addGameListeners() {
 function testOutput(e) {
 	getMouseXY(e);
 	dotxy();
-	console.log( 'x = ' + ratx );
-	console.log( 'y = ' + raty );
+	var move = whereInHex( ratx, raty );
+	if( move.line != -1 && move.x != -1 && move.y != -1 )
+	{
+		sendMove( move );
+	}
 	console.log( whereInHex(ratx, raty) );
 }
 
@@ -265,6 +273,8 @@ function whereInHex(ratx,raty){
 	}else
 	if(isItIn6()){
 		line=6;i=k;j=t;
+	} else {
+		line = -1; i = -1; j = -1;
 	}
 	return { 'x':i, 'y':j, 'line':line };
 }
@@ -278,6 +288,7 @@ function takeAndLine(f,g,h,l){
 	bo.beginPath();
 	if(player==1){
 		bo.strokeStyle=p1.color;
+		console.log( p1 );
 		bo.fillStyle=p1.color;
 	}else if(player==2){
 		bo.strokeStyle=p2.color;

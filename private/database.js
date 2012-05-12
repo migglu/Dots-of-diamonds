@@ -130,7 +130,7 @@ function registerUser(user, mail, pass, response, request) {
 			return;
 		}
 		this.query()
-		.insert('dd_users', ['', user, mail, pass, '', 0]) //FIXME: token?!
+		.insert('dd_users', ['', user, mail, pass, '', 0, 0]) //FIXME: token?!
 		.execute(function(error, result) {
 			if(error)
 			{

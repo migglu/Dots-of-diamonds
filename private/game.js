@@ -6,17 +6,18 @@ var waitingGames = {}; // token => {game, date}
 function addGameListeners(socket, game) {
 	socket.on('move', function (data) {
 		if(data.x != undefined && data.y != undefined && data.line != undefined) {
-			game.playTurn(socket, data.x, data.y, data.line);
+			console.log( data );
+			game.playTurn(socket, data);
 		}
 	});
 }
 
 function setLine(x, y, line) {
-	this.lines[x][y] |= 1 << (line - 1);
+	this.lines[ x ][ y ] |= 1 << (line - 1);
 }
 
 function getLine(x, y, line) {
-	return this.lines[x][y] & 1 << (line - 1);
+	return this.lines[ x ][ y ] & ( 1 << (line - 1) );
 }
 
 function Game() {
@@ -31,27 +32,28 @@ function Game() {
 	this.turn = null;
 	this.waiting = null;
 	this.timer = null;
-	this.timeDelay = 1000;
+	this.timeDelay = 15000;
 	this.end = false;
 	this.winner = null;
 	this.turns = [];
 }
 
 function sendMove(move) {
-	io.sendSingleMessage(this.waiting.socket, 'move', {'move':move});
-	io.sendSingleMessage(this.turn.socket, 'move', {'move':move});
+	io.sendSingleMessage(this.waiting.socket, 'move', move);
+	io.sendSingleMessage(this.turn.socket, 'move', move);
 }
 
-function playTurn(player, x, y, line) {
+function playTurn(player, turn) {
 	if(this.turn.socket == player) {
-		
-		if( this.getLine( x, y, line ) != 0 ) {
+		console.log( turn );
+		if( this.getLine( turn.x, turn.y, turn.line ) != 0 ) {
 			return;
 		}
-		
-		this.setLine( x, y, line );
-		var move = {'x': x, 'y': y, 'line': line, 'player': this.turn.id};
-		this.sendMove(move);
+		this.endTimer();
+		this.setLine( turn.x, turn.y, turn.line );
+		console.log( this.turn );
+		var move = {'x': turn.x, 'y': turn.y, 'line': turn.line, 'player': this.turn.id};
+		this.sendMove( move );
 		this.turns.push(move);
 		this.linesLeft--;
 		if( this.linesLeft == 0 ) {
@@ -94,8 +96,8 @@ function beginGame() {
 	sendGameStart(this.player1.socket);
 	sendGameStart(this.player2.socket);
 	
-	this.turn = this.player1.socket;
-	this.waiting = this.player2.socket;
+	this.turn = this.player1;
+	this.waiting = this.player2;
 	this.startTimer();
 }
 
@@ -105,8 +107,8 @@ function setId(id) {
 
 function startTimer() {
 	console.log( 'Swithing the turrrrrrrnzzzzzzzzzzzzzz' );
-	sendTurn(this.turn);
-	sendWait(this.waiting);
+	sendTurn(this.turn.socket);
+	sendWait(this.waiting.socket);
 	var a = function (e) { e.nextTurn() };
 	this.timer = setTimeout( a, this.timeDelay, this );
 }
@@ -184,11 +186,6 @@ function sendGameEnd(socket, winner)
 {
 	//TODO winner
 	io.sendSingleMessage(socket, 'gameEnd', { 'winner': winner});
-}
-
-function sendMove(socket)
-{
-	io.sendSingleMessage(socket, 'move', {'move':move});
 }
 
 function sendToChat( socket )
