@@ -218,6 +218,7 @@ function mouseInHex(ratx,raty){
 
 function whereInHex(ratx,raty){
 	s=Math.floor(ratx/hex_width);
+	mouseInHex(ratx,raty);
 	dotxy();
 	in_side_of_hex=Math.floor(ratx/hex_width);
 	if(raty<doty-Math.floor(hex_length/2)){
