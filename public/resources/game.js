@@ -67,7 +67,9 @@ function addGameListeners() {
 function testOutput(e) {
 	getMouseXY(e);
 	dotxy();
-	console.log( whereInHex() );
+	console.log( 'x = ' + ratx );
+	console.log( 'y = ' + raty );
+	console.log( whereInHex(ratx, raty) );
 }
 
 
