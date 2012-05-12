@@ -214,7 +214,9 @@ function mouseInHex(ratx,raty){
 	k=Math.floor(k);
 }
 
-function whereInHex(){
+function whereInHex(ratx,raty){
+	s=Math.floor(ratx/hex_width);
+	dotxy();
 	in_side_of_hex=Math.floor(ratx/hex_width);
 	if(raty<doty-Math.floor(hex_length/2)){
 		if(isItIn1()){
@@ -262,12 +264,6 @@ function whereInHex(){
 		line=6;i=k;j=t;
 	}
 	return { 'x':i, 'y':j, 'line':line };
-}
-
-function mouseLine(ratx,raty){
-	s=Math.floor(ratx/hex_width);
-	dotxy();
-	whereInHex();		
 }
 
 function takeAndLine(f,g,h,l){
@@ -338,7 +334,7 @@ function drawLine(e){
 		bo.fillStyle=p2.color;
 	}
 	hexParameters(width,height);
-	mouseLine(ratx,raty,bo);
+	whereInHex(ratx,raty);
 	bo.moveTo(dotx,doty);
 	
 	theLine(bo);
