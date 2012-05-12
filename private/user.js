@@ -25,11 +25,10 @@ function checkLoginQuery(user, pass, response, request, callback)
 		console.log("Trying to login falsely.. exiting!");
 		return;
 	}
-	console.log("Calling the database function");
 	callback(user, pass, response, request);
 }
 
-function reg(response, request)
+function register(response, request)
 {
 	if (request.method == 'GET')
 	{
@@ -37,7 +36,6 @@ function reg(response, request)
 		var user = urlParts.query["reg[user]"];
 		var mail = urlParts.query["reg[mail]"];
 		var pass = urlParts.query["reg[pass]"];
-		console.log(urlParts.query);
 		
 		checkRegisterQuery(user, mail, pass, response, request, db.addUser);
 	}
@@ -55,5 +53,4 @@ function login(response, request)
 	}
 }
 
-exports.register = reg;
-//exports.login = login;
+exports.register = register;

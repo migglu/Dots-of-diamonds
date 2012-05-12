@@ -36,12 +36,50 @@ function initGame(id1, id2, callback)
 				console.log('Game initialization error...');
 				return;
 			}
-			callback(res.id);
+			callback( res.id );
 		});
 	});
 		
 }
 
+function inGame( socket, callbackOnOk, callbackOnError ) {
+	db.connect( function( error ) {
+		if( error ) {
+			console.log("CONNECTION error: " + error);
+			return;
+		}
+		console.log( socket );
+		this.query()
+		.select( 'ingame' )
+		.from( 'dd_users' )
+		.where( 'id = ?', [ socket.store.data.userid ] )
+		.execute( function( error, rows, cols ) {
+			
+			if( error ) {
+				console.log( 'Game init error' );
+				return;
+			}
+			
+			if( rows.length != 1) {
+				if(callbackOnError != undefined ) {
+					callbackOnError( socket );
+				}
+				console.log( 'Unexpected error! :(' );
+				return;
+			}
+			if( rows[0].ingame == 1) {
+				if(callbackOnError != undefined ) {
+					callbackOnError( socket );
+					console.log( 'Already in game :(' );
+				}
+				return;
+			}
+			
+			callbackOnOk( socket );
+			
+		});
+	});
+}
 
 function resetLoggedIn()
 {
@@ -53,7 +91,7 @@ function resetLoggedIn()
 		
 		this.query()
 		.update('dd_users')
-		.set({'loggedin': 0})
+		.set({'loggedin': 0, 'ingame': 0})
 		.where('1 = 1')
 		.execute(function (error, result) {
 			if(error) {
@@ -62,6 +100,7 @@ function resetLoggedIn()
 		});
 	});
 }
+
 
 function logout(token) {
 	db.connect(function(error) {
@@ -199,7 +238,7 @@ function loginSocket(user, pass, socket, duplicateCallback)
 	
 }
 
-function getUsername(token, loginFunction, socket)
+function loginUser(token, loginFunction, socket)
 {
 	db.connect(function (error) {
 		if (error) {
@@ -211,7 +250,7 @@ function getUsername(token, loginFunction, socket)
 		.select('id, name')
 		.from('dd_users')
 		.where('token = ?', [token])
-		.execute(function (error, rows, cols) {
+		.execute(function (error, rows, cols) { // Error: Can't execute a query without being connected ?!?!
 			if(error || rows[0] == undefined)
 			{
 				socket.emit('ok', {'error': 'Unknown token' + token});
@@ -228,7 +267,8 @@ function getUsername(token, loginFunction, socket)
 
 exports.addUser = checkUser;
 exports.loginSocket = loginSocket;
-exports.getUsername = getUsername;
+exports.loginUser = loginUser;
 exports.logout = logout;
 exports.resetLoggedIn = resetLoggedIn;
 exports.initGame = initGame;
+exports.inGame = inGame;

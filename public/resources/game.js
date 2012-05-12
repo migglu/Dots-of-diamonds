@@ -1,3 +1,76 @@
+var gameName = 'http://' + window.location.host + '/game';
+var gameSocket = io.connect( gameName );
+
+gameSocket.on('connect', function () {
+	var token = getCookie("Dots-of-Diamonds");
+	console.log( token );
+	if(token != undefined)
+	{
+		gameSocket.emit('auth', {'token': token});
+		gameSocket.on('ok', function (data) {
+			if( data != undefined && data.error != undefined && data.error == 0) {
+				addGameListeners();
+				fieldArray( 6 );
+			}
+		});
+	}
+});
+
+var gameListenersAdded = false;
+function addGameListeners() {
+	if( gameListenersAdded )
+	{
+		return;
+	}
+	
+	gameSocket.on( 'queueing', function () {
+		document.getElementById('message').innerHTML = 'Waiting for your opponent to connect';
+	});
+	
+	gameSocket.on( 'move', function ( data ) {
+		if( data != undefined ) {
+			if( data.x != undefined && data.y != undefined && data.line != undefined && data.player != undefined )
+			{
+				takeAndLine( data.x, data.y, data.line, data.player );
+			}
+		}		
+	});
+	
+	gameSocket.on( 'gameStart', function () {
+		field( 2 );
+		document.getElementById('message').innerHTML = '';
+	});
+	
+	gameSocket.on( 'turnAck', function () {
+		//TODO give move to me
+	});
+	gameSocket.on( 'wait', function () {
+		//TODO take away ability to give move
+	});
+	gameSocket.on( 'gameEnd', function (data) {
+		if( data != undefined )
+		{
+			if( data.winner != undefined )
+			{
+				//TODO displayWinner();
+				//TODO display back to chat button
+			}
+		}
+	});
+	gameSocket.on( 'back', function () {
+		window.location = '/chat';
+	});
+	
+	gameListenersAdded = true;
+}
+
+function testOutput(e) {
+	getMouseXY(e);
+	dotxy();
+	console.log( whereInHex() );
+}
+
+
 var draw_x,draw_y,hex_counter,hex_length,i,j,hex_height,hex_width,player,switching,d,a,b,c,ratx,raty,dotx,doty,k,t,in_side_of_hex,line,hexarray,
 	p1,p2,hotseat=false;
 
@@ -22,7 +95,7 @@ function field(size){
 	var height=document.getElementById("dots_game").height;
 	var bo=c.getContext("2d");
 	bo.strokeStyle="#c0c0c0";
-	hex_counter=size*4;
+	hex_counter=size*2 + 2;
 	hexParameters(width,height);
 	draw_y=hex_height;
 	for(i=0;i<(hex_counter/2);i++){
@@ -188,7 +261,7 @@ function whereInHex(){
 	if(isItIn6()){
 		line=6;i=k;j=t;
 	}
-	return i,j,line;
+	return { 'x':i, 'y':j, 'line':line };
 }
 
 function mouseLine(ratx,raty){
@@ -957,7 +1030,6 @@ function getMouseXY(e) {
 	}
 	var ev = e || window.event || window.Event;
 	if (IE) {
-		console.log(ratx);
 		ratx = ev.clientX + document.body.scrollLeft;
 		raty = ev.clientY + document.body.scrollTop;
 	} else {
@@ -974,7 +1046,7 @@ function getMouseXY(e) {
 	document.getElementById('coords').innerHTML = str;
 }
 
-function hexParameters(width,height){
+function hexParameters(width,height) {
 	hex_width=width/(2*hex_counter+1);
 	hex_width=Math.floor(hex_width);
 	

@@ -1,11 +1,10 @@
 var io = require('./socket');
 var db = require('./database');
-var game = require('./game');
+var gameWaitingRoom = require( './pendingRoom' );
 
-var loggedInByToken = {};
-var loggedInById = {};
-var loggedInByName = {}; //I hate you, Valyo and Bankin...
-
+var loggedInByToken = {}; // token => { name, id }
+var loggedInById = {}; // id => socket[]
+var loggedInByName = {}; // name => socket[]
 
 function setGlobalMessageListener(socket)
 {
@@ -14,8 +13,13 @@ function setGlobalMessageListener(socket)
 			console.log('Initializing game error: ' + msg.id);
 			return;
 		}
-		var match = new game.Game(this, loggedInById[msg.id][0]);
-		match.initialize();
+		if(loggedInById[msg.id] != undefined)
+		{
+			
+			for( rsocket in loggedInById[ msg.id ] ) {
+				gameWaitingRoom.sendInvite( socket, loggedInById[ msg.id ][ rsocket ] );
+			}
+		}
 		
 	});
 	
@@ -90,10 +94,12 @@ function setGlobalMessageListener(socket)
 function setPrivateMessageListener(socket)
 {
 	socket.on('privateMessage', function (message) {
+		console.log( message.msg );
 		if(loggedInByToken[message.token] === undefined)
 		{
 			console.log("UNAUTHORIZED PRIVATE MESSAGE : " + message.msg);
 		} else {
+			console.log( loggedInById[message.id] );
 			if(message.id != undefined && message.id != null && loggedInById[message.id] != undefined) {
 				for(var key in loggedInById[message.id])
 				{
@@ -192,20 +198,7 @@ function sendUserNames() {
 	io.broadcastLoggedIn(names);
 }
 
-function chatAuthListener(socket) {
-	socket.on('auth', function (token) {
-		if(token.token == undefined)
-		{
-			socket.emit('ok', {'error': 'No token...'});
-			console.log('UNDEFINED TOKEN...');
-			return;
-		}
-		db.getUsername(token.token, setLoggedIn, socket);
-	});
-}
-
 exports.setLoggedIn = setLoggedIn;
 exports.logout = logout;
 exports.logoutAll = logoutAll;
-exports.chatAuthListener = chatAuthListener;
 			

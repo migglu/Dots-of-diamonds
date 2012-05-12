@@ -18,6 +18,9 @@ function addOkListener(response)
 		if(!addedListeners) {
 			addChatListeners();
 		}
+		if(!addedInviteListeners) {
+			addGameInviteListeners();
+		}
 	} else {
 		deleteCookie('Dots-of-Diamonds');
 		window.location = '/index';

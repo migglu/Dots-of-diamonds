@@ -5,9 +5,93 @@ var chats = {'-1': document.getElementById('chat')};
 var highlightColor = '#dde';
 var normalColor = '#eee';
 var addedListeners = false;
+var addedInviteListeners = false;
+//TODO recentlyDeniedPlayers {} id => time
+
+function addGameInviteListeners() {
+	if( addedInviteListeners )
+	{
+		return;
+	}
+	
+	chat.on( 'gameError', function (data) {
+		//TODO display game error
+	});
+	
+	chat.on( 'inGame', function (data) {
+		if( data != undefined ) {
+			if( data.id != undefined ) {
+				if( chats[ data.id ] != undefined ) {
+					writeInGameMessage( chats[ data.id ], data.id );
+				}
+			}
+		}
+	});
+	
+	chat.on( 'gameDenied', function (data) {
+		if( data != undefined ) {
+			if( data.id != undefined ) {
+				if( chats[ data.id ] != undefined ) {
+					writeDeniedMessage( chats[ data.id ], data.id );
+				}
+			}
+		}
+	});
+	
+	chat.on( 'gameAccepted', function (data) {
+		if( data != undefined ) 
+		{
+			if( data.id != undefined )
+			{
+				//TODO display accepted message (optional)
+				window.location = '/game';
+			}
+		}
+	});
+	
+	chat.on( 'gameInvite', function (data) {
+		if( data != undefined )
+		{
+			if( data.id != undefined )
+			{
+				if( chats[data.id] == undefined )
+				{
+					makeNewChatbox( data.id );
+				}
+				setNewInviteMessage(chats[data.id], data.id);
+			}
+		}
+	});
+	
+	addedInviteListeners = true;
+}
+
+function getUsername( id ) {
+	for( key in loggedInUsers ) {
+		if( loggedInUsers[ key ].id == id )
+		{
+			return loggedInUsers[ key ].name;
+		}
+	}
+	return '';
+}
+
+function writeInGameMessage( field, id ) {
+	field.innerHTML += getUsername( id ) + ' е в текуща игра.</ br>';
+	scrollToBottom( field ); 
+}
+
+function writeInvitedMessage( field, id ) {
+	field.innerHTML += 'Ти покани ' + getUsername( id ) + ' да играе с теб! Моля изчакай отговор.<br />';
+	scrollToBottom( field );
+}
 
 function startGame() {
-	chat.emit('initGame', {'id': 47});
+	if( conversationId != -1 ) {
+		chat.emit('initGame', { 'id': conversationId });
+		writeInvitedMessage( chats[ conversationId ], conversationId );
+	}
+	
 }
 
 function emit(field) {
@@ -51,6 +135,48 @@ function scrollToBottom(field)
 function setNewMessage(field, user, message)
 {
 	field.innerHTML += user + ': ' + message + '<br />';
+	scrollToBottom(field);
+}
+
+function acceptInvite() {
+	if( conversationId != -1 )
+	{
+		chat.emit( 'gameAccept', { 'id': conversationId });
+		writeAcceptMessage( chats[conversationId] );
+	}
+}
+
+function denyInvite() {
+	if( conversationId != -1 )
+	{
+		chat.emit( 'gameDenied', { 'id': conversationId });
+		writeDenyMessage( chats[conversationId] );
+	}
+}
+
+function writeDeniedMessage( field, id ) {
+	field.innerHTML += getUsername( id ) + ' отказа твоята покана.<br />';
+	scrollToBottom(field);
+}
+
+function writeDenyMessage(field) {
+	field.innerHTML += 'Ти отказа поканата за игра.<br />';
+	scrollToBottom(field);
+}
+
+function writeAcceptMessage(field) {
+	field.innerHTML += 'Ти прие поканата за игра. Играта ще започне скоро!<br />';
+	scrollToBottom(field);
+}
+
+function setNewInviteMessage( field, user )
+{
+	var accept = '<span onclick="acceptInvite()" class="clickable" >Приеми</span>';
+	var deny = '<span onclick="denyInvite()" class="clickable" >откажи</span>';
+	field.innerHTML += getUsername( user ) + ' те кани да играеш. ' + accept + ' или ' + deny + '?<br />';
+	if( user != conversationId ) {
+		incrementCounter( document.getElementById( 'counter_' + user ) );
+	}
 	scrollToBottom(field);
 }
 

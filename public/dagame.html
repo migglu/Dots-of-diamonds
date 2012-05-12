@@ -1,20 +1,20 @@
 <html>
 	<head>
+		<title>Dots of Diamonds - Game</title>
+		<script src="socket.io/socket.io.js"></script>
+		<script src="/resources/cookies.js"></script>
+		<script src="/resources/game.js"></script>
 	</head>
  	<body>
-		<script src="resources/game.js"></script>
+		<div id="message" ></div>
  		<canvas id="dots_game" height="600" width="800" style="border: 1px red solid;">
  		</canvas>
 		<div id="coords" >X =  Y = </div>
 		<div id="click_coords" >X =  Y = </div>
  		
  		<script>
- 			document.getElementById('dots_game').addEventListener('mousedown', drawLine);
+ 			document.getElementById('dots_game').addEventListener('mousedown', testOutput );
  			document.getElementById('dots_game').addEventListener('mousemove', getMouseXY);
  		</script>
- 		
-		<a href="#" onclick="field(1),fieldArray(6)"><img name="jsbutton" width="60" height="20" alt="small"></a>
-		<a href="#" onclick="field(2),fieldArray(10)"><img name="jsbutton" width="60" height="20" alt="medium"></a>
-		<a href="#" onclick="field(3),fieldArray(16)"><img name="jsbutton" width="60" height="20" alt="big"></a>
 	</body>
  </html>

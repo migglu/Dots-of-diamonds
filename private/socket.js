@@ -1,6 +1,7 @@
 var io;
 var db = require('./database');
-var chat = require('./chat');
+var chat = require( './chat' );
+var game = require( './game' );
 
 function broadcastLoggedIn(loggedIn) {
 	io.of('/chat').emit('loggedList', loggedIn);
@@ -17,6 +18,7 @@ function connect(server)
 	io = require('socket.io').listen(server);
 	setupLogin();
 	setupChat();
+	setupGame();
 }
 
 function setupLogin()
@@ -33,42 +35,37 @@ function setupLogin()
 	});
 }
 
-function setupChat()
-{
-	io.of('/chat').on('connection', chat.chatAuthListener);
+function setupChat() {
+	io.of('/chat').on('connection', function(socket) {
+		login(socket, chat.setLoggedIn);
+	});
 }
 
-
-
-
-function sendGameStart(socket)
-{
-	socket.emit('gameStart', {});
+function setupGame() {
+	io.of( '/game' ).on( 'connection', function( socket ) {
+		login( socket, game.setLoggedIn );
+	});
 }
 
-function sendTurn(socket)
-{
-	socket.emit('turnAck', {});
+function sendSingleMessage(socket, msgName, msgContent) {
+	socket.emit(msgName, msgContent);
 }
-
-function sendWait(socket)
-{
-	socket.emit('wait', {});
+	
+function login(socket, callback) {
+	socket.on('auth', function (token) {
+		if(token.token == undefined)
+		{
+			socket.emit('ok', {'error': 'No token...'});
+			console.log('UNDEFINED TOKEN...');
+			return;
+		}
+		
+		db.loginUser(token.token, callback, socket);
+	});
 }
-
-function sendGameEnd(socket)
-{
-	socket.emit('gameEnd', {});
-}
-
-
-
-
 
 exports.connect = connect;
 exports.broadcastToChat = broadcastToChat;
 exports.broadcastLoggedIn = broadcastLoggedIn;
-exports.sendGameStart = sendGameStart;
-exports.sendTurn = sendTurn;
-exports.sendWait = sendWait;
-exports.sendGameEnd = sendGameEnd;
+exports.sendSingleMessage = sendSingleMessage
+exports.login = login;
