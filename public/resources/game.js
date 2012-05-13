@@ -1,16 +1,53 @@
 var gameName = 'http://' + window.location.host + '/game';
 var gameSocket = io.connect( gameName );
 
+var TURN_TIME = 15;
+var turnClock = null;
+var clock = 0;
+var turn;
+
+function startClock( time ) {
+	clock = time;
+	writeClock();
+	turnClock = setTimeout( tick, 1000 ); 
+}
+
+function writeClock() {
+	document.getElementById('timer').innerHTML = clock;
+}
+
+function tick() {
+	clock--;
+	if( clock > 0 )
+	{
+		writeClock();
+		turnClock = setTimeout( tick, 1000 ); 
+	} else {
+		stopClock();
+	}
+}
+
+function stopClock() {
+	clearTimeout( turnClock );
+	document.getElementById('timer').innerHTML = '';
+}
+
+function writeTurn( player ) {
+	if( player == 1 ) {
+		document.getElementById('turn').innerHTML = "Твой ход е";
+	} else if( player == 2 ) {
+		document.getElementById('turn').innerHTML = "Противников ход е";
+	}
+}
+
 gameSocket.on('connect', function () {
 	var token = getCookie("Dots-of-Diamonds");
-	console.log( token );
 	if(token != undefined)
 	{
 		gameSocket.emit('auth', {'token': token});
 		gameSocket.on('ok', function (data) {
 			if( data != undefined && data.error != undefined && data.error == 0) {
 				addGameListeners();
-				fieldArray( 6 );
 			}
 		});
 	}
@@ -35,22 +72,25 @@ function addGameListeners() {
 		if( data != undefined ) {
 			if( data.x != undefined && data.y != undefined && data.line != undefined && data.player != undefined )
 			{
-				console.log( 'drawing the LINEEEEEEE' );
 				takeAndLine( data.x, data.y, data.line, data.player );
 			}
 		}		
 	});
 	
 	gameSocket.on( 'gameStart', function () {
+		fieldArray( 6 );
 		field( 2 );
 		document.getElementById('message').innerHTML = '';
 	});
 	
 	gameSocket.on( 'turnAck', function () {
-		//TODO give move to me
+		writeTurn( 1 );
+		turn = 1;
+		startClock( TURN_TIME );
 	});
 	gameSocket.on( 'wait', function () {
-		//TODO take away ability to give move
+		writeTurn( 2 );
+		turn = 2;
 	});
 	gameSocket.on( 'gameEnd', function (data) {
 		if( data != undefined )
@@ -69,15 +109,19 @@ function addGameListeners() {
 	gameListenersAdded = true;
 }
 
-function testOutput(e) {
-	getMouseXY(e);
-	dotxy();
-	var move = whereInHex( ratx, raty );
-	if( move.line != -1 && move.x != -1 && move.y != -1 )
+function getAndSendMove(e) {
+	console.log( e );
+	if( e != undefined && e.button != undefined && e.button == 0 ) 
 	{
-		sendMove( move );
+		getMouseXY(e);
+		dotxy();
+		var move = whereInHex( ratx, raty );
+		if( move.line != -1 && move.x != -1 && move.y != -1 && turn == 1)
+		{
+			sendMove( move );
+			stopClock();
+		}
 	}
-	console.log( whereInHex(ratx, raty) );
 }
 
 
