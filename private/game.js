@@ -12,6 +12,49 @@ function addGameListeners(socket, game) {
 	});
 }
 
+var pairs = [ [3, 3 << 3], [3 << 1, 3 << 4 ], [ 3 << 2, 1 | (1 << 5) ], [ 3 << 3, 3], [3 << 4, 3 << 1 ], [ 1 | (1 << 5), 3 << 2 ] ] ;
+var positionsOdd = [ [ 0, -1 ], [ -1, 0 ], [ 0, +1 ], [ +1, +1 ], [ +1, 0 ], [ +1, -1 ] ];
+var positionsEven = [ [ -1, -1 ], [ -1, 0 ], [ -1, +1 ], [ 0, +1 ], [ +1, 0 ], [ 0, -1 ] ];
+var everyRomboidPossible = [ [ 0, 5 ], [ 0, 1], [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 4, 5 ] ];
+
+function checkIfLinesExist( move1, move2, mask1, mask2, object ) {
+	var lines1 = this.getHexLines( move1.x, move1.y );
+	var lines2 = this.getHexLines( move2.x, move2.y );
+	console.log( 'lines1 = ' + lines1 );
+	console.log( 'lines2 = ' + lines2 );
+	console.log( 'mask1 = ' + mask1 );
+	console.log( 'mask2 = ' + mask2 );
+	if( ( (lines1 & mask1) == mask1 ) && ( (lines2 & mask2) == mask2 ) )
+	{
+		object.incrementScore();
+	}
+}
+
+function checkIfScored( move, object ) {
+	var line = move.line - 1;
+	for( possible in everyRomboidPossible[ line ] )
+	{
+		var currentPossibleRomboid = everyRomboidPossible[ line ][ possible ];
+		var move1 = {}, move2 = {};
+		move1.x = move.x;
+		move1.y = move.y;
+		if( move1.y % 2 == 1 ) {
+			move2.x = move.x + positionsOdd[ currentPossibleRomboid ][0];
+			move2.y = move.y + positionsOdd[ currentPossibleRomboid ][1];
+		} else {
+			move2.x = move.x + positionsEven[ currentPossibleRomboid ][0];
+			move2.y = move.y + positionsEven[ currentPossibleRomboid ][1];
+		}
+		
+		if( move2.x < 0 ) { move2.x = 5; }
+		if( move2.x > 5 ) { move2.x = 0; }
+		if( move2.y < 0 ) { move2.x = 5; }
+		if( move2.y > 5 ) { move2.x = 0; }
+		
+		this.checkIfLinesExist( move1, move2, pairs[ currentPossibleRomboid ][ 0 ], pairs[ currentPossibleRomboid ][ 1 ], object );
+	}
+}
+
 function setLine(x, y, line) {
 	this.lines[ x ][ y ] |= 1 << (line - 1);
 }
@@ -20,12 +63,17 @@ function getLine(x, y, line) {
 	return this.lines[ x ][ y ] & ( 1 << (line - 1) );
 }
 
+function getHexLines( x, y ) {
+	return this.lines[ x ][ y ];
+}
+
 function Game() {
 	this.size = 6;
 	this.linesLeft = this.size*this.size*6;
 	this.lines = new Array();
-	this.player1 = {'socket': null, 'id': 1};
-	this.player2 = {'socket': null, 'id': 2};
+	this.player1 = {'socket': null, 'id': 1, 'score': 0 };
+	this.player2 = {'socket': null, 'id': 2, 'score': 0 };
+	this.anotherTurn = false;
 	this.p1UserId = -1;
 	this.p2UserId = -1;
 	this.id = -1;
@@ -36,6 +84,12 @@ function Game() {
 	this.end = false;
 	this.winner = null;
 	this.turns = [];
+}
+
+function incrementScore() {
+	console.log( 'incrementing the SCOREZZZZZZZ' );
+	this.anotherTurn = true;
+	this.turn.score++;
 }
 
 function sendMove(move) {
@@ -51,8 +105,10 @@ function playTurn(player, turn) {
 		}
 		this.endTimer();
 		this.setLine( turn.x, turn.y, turn.line );
-		console.log( this.turn );
 		var move = {'x': turn.x, 'y': turn.y, 'line': turn.line, 'player': this.turn.id};
+		
+		this.checkIfScored( move, this );
+		
 		this.sendMove( move );
 		this.turns.push(move);
 		this.linesLeft--;
@@ -119,7 +175,11 @@ function endTimer() {
 
 function nextTurn() {
 	if(!this.end) {
-		this.switchTurn();
+		if( !this.anotherTurn ) {
+			this.switchTurn();
+		} else {
+			this.anotherTurn = false;
+		}
 		this.startTimer();
 	} else {
 		//TODO endgame
@@ -148,12 +208,7 @@ function connectPlayer(socket, number) {
 			return;
 		}
 	}
-	if( this.player1.socket != null ) {
-		console.log( "this.player1.socket != null" );
-	}
-	if( this.player2.socket != null ) {
-		console.log( "this.player2.socket != null" );
-	}
+	
 	if( this.player1.socket != null && this.player2.socket != null )
 	{
 		this.initialize();
@@ -208,6 +263,10 @@ Game.prototype.setIdAndBeginGame = setIdAndBeginGame;
 Game.prototype.connectPlayer = connectPlayer;
 Game.prototype.setLine = setLine;
 Game.prototype.getLine = getLine;
+Game.prototype.getHexLines = getHexLines;
+Game.prototype.checkIfScored = checkIfScored;
+Game.prototype.checkIfLinesExist = checkIfLinesExist;
+Game.prototype.incrementScore = incrementScore;
 
 function gameAuthListener( socket ) {
 	var token = socket.store.data.token;

@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<title>Dots of Diamonds - Game</title>
+		<script src="socket.io/socket.io.js"></script>
+		<script src="/resources/cookies.js"></script>
+		<script src="../public/resources/game.js"></script>
+	</head>
+ 	<body>
+		<input type="button" value="draw" onclick="fieldArray(6);field(2);"  />
+		<div id="message" ></div>
+		<div id="timer" ></div>
+		<div id="turn" ></div>
+ 		<canvas id="dots_game" height="600" width="800" style="border: 1px red solid;">
+ 		</canvas>
+		<div id="coords" >X =  Y = </div>
+		<div id="click_coords" >X =  Y = </div>
+ 		
+ 		<script>
+			function onClickDraw(e){
+				getMouseXY(e);
+				dotxy();
+				var drawline = whereInHex(ratx, raty);
+				takeAndLine( drawline.x, drawline.y, drawline.line, drawline.player );
+			}
+			
+			function drawBitsAsLines( x, y, mask ) {
+				for(var i = 0; i < 6; i++ ) {
+					if( mask & ( 1 << i ) )
+					{
+						takeAndLine( x, y, i+1, 1 );
+					}
+				}
+			}
+			
+			var pairs = [ [3, 3 << 3], [3 << 1, 3 << 4 ], [ 3 << 2, 1 | (1 << 5) ], [ 3 << 3, 3], [3 << 4, 3 << 1 ], [ 1 | (1 << 5), 3 << 2 ] ] ;
+			var positionsOdd = [ [ 0, -1 ], [ -1, 0 ], [ 0, +1 ], [ +1, +1 ], [ +1, 0 ], [ +1, -1 ] ];
+			var positionsEven = [ [ -1, -1 ], [ -1, 0 ], [ -1, +1 ], [ 0, +1 ], [ +1, 0 ], [ 0, -1 ] ];
+			var everyRomboidPossible = [ [ 0, 5 ], [ 0, 1], [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 4, 5 ] ];
+			
+			function drawpair( x1, y1, x2, y2, pair ) {
+				drawBitsAsLines( x1, y1, pairs[pair][0] );
+				drawBitsAsLines( x2, y2, pairs[pair][1] );
+			}
+			
+			function drawRomboid( x1, y1, pair ) {
+				var x2, y2;
+				if( y1 % 2 == 1 ) {
+					x2 = x1 + positionsOdd[ pair ][0];
+					y2 = y1 + positionsOdd[ pair ][1];
+				} else {
+					x2 = x1 + positionsEven[ pair ][0];
+					y2 = y1 + positionsEven[ pair ][1];
+				}
+				
+				if(x2 < 0) { x2 = 5; }
+				if(x2 > 5) { x2 = 0; }
+				if(y2 < 0) { y2 = 5; }
+				if(y2 > 5) { y2 = 0; }
+				
+				console.log( 'x1 = ' + x1 );
+				console.log( 'x2 = ' + x2 );
+				console.log( 'y1 = ' + y1 );
+				console.log( 'y2 = ' + y2 );
+				drawpair( x1, y1, x2, y2, pair );
+				
+			}
+ 			document.getElementById('dots_game').addEventListener('mousedown', onClickDraw );
+ 			document.getElementById('dots_game').addEventListener('mousemove', getMouseXY);
+ 		</script>
+	</body>
+ </html>
