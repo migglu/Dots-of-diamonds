@@ -34,7 +34,7 @@ function stopClock() {
 
 function writeTurn( player ) {
 	if( player == 1 ) {
-		document.getElementById('turn').innerHTML = "Твой ход е";
+		document.getElementById('turn').innerHTML = decodeURIComponent("Твой ход е");
 	} else if( player == 2 ) {
 		document.getElementById('turn').innerHTML = "Противников ход е";
 	}
@@ -148,6 +148,8 @@ function field(size){
 	var width=document.getElementById("dots_game").width;
 	var height=document.getElementById("dots_game").height;
 	var bo=c.getContext("2d");
+	bo.lineWidth=3;
+	bo.lineCap = 'round';
 	bo.strokeStyle="#c0c0c0";
 	hex_counter=size*2 + 2;
 	hexParameters(width,height);
@@ -172,6 +174,7 @@ function field(size){
 	
 	p1=new Player('#00FF00');
 	p2=new Player('#FF0000');
+	bo.lineWidth=3;
 	return hex_counter,p1,p2;
 }
 

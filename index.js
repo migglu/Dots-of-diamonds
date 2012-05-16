@@ -12,7 +12,6 @@ reset();
 var handle = {};
 handle['/'] = requestHandlers.serveIndex;
 handle['/index'] = requestHandlers.serveIndex;
-handle['/upload'] = requestHandlers.upload;
 handle['/show'] = requestHandlers.show;
 handle['/register'] = requestHandlers.register;
 handle['/chat'] = requestHandlers.chat;

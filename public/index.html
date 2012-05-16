@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>Dots of Diamonds - Register</title>
+		<title>Dots of Diamonds - Index</title>
+		<link rel="shortcut icon"  href="resources/favicon.png">
 		<link rel="stylesheet" href="resources/style.css" />
 		<script src="/resources/sha256.js"></script>
 		<script src="/resources/cookies.js"></script>
@@ -12,13 +13,14 @@
 	</head>
 	
 	<body>
-		<header>
+		<header> <img src="resources/header.png" /> <span class="subtext">Beta</span>
 		</header>
 		
 		<article>
 			
 			<div class="login">
-				<form method="GET" action="/login" id="log" onSubmit="send(document.getElementById('log')); return false;;">
+				<span class="boxtitle" >Login</span>
+				<form method="GET" action="#" id="log" onSubmit="send(document.getElementById('log')); return false;">
 					
 					<input type="text" name="reg[user]" id="user" required placeholder="Username" /> <br />
 					<input type="password" name="reg[pass]" id="pass" required placeholder="Password" /> <br />
@@ -27,13 +29,14 @@
 			</div>
 			
 			<div class="reg_cont">
+				<span class="boxtitle" >Register</span>
 				<form method="GET" action="/register" id="register" onSubmit="hash(this)">
 					
 					<input type="text" name="reg[user]" id="user" required placeholder="Username" /> <br />
 					<input type="email" name="reg[mail]" id="mail" required placeholder="Email" /> <br />
 					<input type="password" name="reg[pass]" id="pass" required placeholder="Password" /> <br />
 					
-					<input type="submit" name="submit" class="submit" value="Register" />
+					<input type="submit" name="submit" class="submit" value="Sign up" />
 				</form>
 			</div>
 		</article>

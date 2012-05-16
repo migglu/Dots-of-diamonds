@@ -123,8 +123,8 @@ function emitPrivate(field, id)
 function logout()
 {
 	chat.emit('logout', {"token": getCookie("Dots-of-Diamonds")});
-	window.location = '/index';
 	deleteCookie("Dots-of-Diamonds");
+	window.location = '/index';
 }
 
 function scrollToBottom(field)

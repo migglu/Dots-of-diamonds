@@ -3,16 +3,16 @@ input, form {
 	margin: 0;
 }
 
+*
+{
+	font-size: 1em;
+}
+
 aricle
 {
 	margin: 0 auto;
 }
 
-.reg_cont
-{
-	width: 300px;
-	margin: 0 auto;
-}
 
 input
 {
@@ -120,6 +120,66 @@ input:hover
 {
 	width: 750px;
 }
+
 .reg_cont .clear
 {
+}
+
+.boxtitle
+{
+	text-align: center;
+	margin: 0 auto;
+	margin-bottom: 10px;
+	padding: 0;
+	display: block;
+}
+
+.login
+{
+	padding: 10px;
+	border: 1px solid #eee;
+	border-radius: 7px;
+	
+	width: 213px;
+	float: right;
+}
+
+.reg_cont
+{
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #eee;
+	border-radius: 7px;
+	
+	clear: both;
+	width: 213px;
+	float: right;
+}
+
+article
+{
+	width: 940px;
+	margin: 0 auto;
+}
+
+header
+{
+	width: 940px;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 3.75em;
+	font-family: serif, "Lucida Grande", "Lucida Sans Unicode", "Helvetica", "Arial", "Verdana", sans-serif;
+	color: #111;
+}
+
+header .subtext
+{
+	position: relative;
+	top: -30px;
+	left: -28px;
+	display: inline-block;
+	font-size: 0.2em;
+	padding: 0;
+	text-transform: uppercase;
+	color: #ee0000;
 }

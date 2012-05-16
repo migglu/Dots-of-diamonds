@@ -23,5 +23,8 @@ function getCookie(cookieName)
 
 function deleteCookie(name)
 {
-	document.cookie = name + ";expires=Thu, 01-Jan-70 00:00:01 GMT;"; 
+	var expDate = new Date();
+	expDate.setDate( expDate.getDate() - 1 );
+	var newCookie = name + '=' + getCookie(name) + '; expires=' + expDate.toGMTString() + "; path=/";
+	document.cookie = newCookie;
 }

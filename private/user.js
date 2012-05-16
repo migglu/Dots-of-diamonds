@@ -1,5 +1,6 @@
 var url = require("url");
 var db = require("./database");
+var statics = require('./statics');
 var MIN_USERNAME_LENGTH = 3;
 var MAX_USERNAME_LENGTH = 20;
 
@@ -10,6 +11,7 @@ function checkRegisterQuery(user, mail, pass, response, request, callback)
 		|| user.length > MAX_USERNAME_LENGTH)
 	{
 		console.log("Trying to register falsely.. exiting!");
+		statics.serveFile('register_error.html', response, request)
 		return;
 	}
 	
@@ -23,6 +25,7 @@ function checkLoginQuery(user, pass, response, request, callback)
 		|| user.length > MAX_USERNAME_LENGTH)
 	{
 		console.log("Trying to login falsely.. exiting!");
+		//TODO return somekind of errro
 		return;
 	}
 	callback(user, pass, response, request);

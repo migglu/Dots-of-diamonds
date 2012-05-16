@@ -144,7 +144,7 @@ function registerUser(user, mail, pass, response, request) {
 }
 
 
-function checkUser(user, mail, pass, response, request)
+function addUser(user, mail, pass, response, request)
 {
 	db.connect(function(error) {
 		if (error) {
@@ -211,7 +211,7 @@ function loginSocket(user, pass, socket, duplicateCallback)
 			hash.update(token);
 			token = hash.digest('hex');
 			
-			db.connect(function (error) {
+			db.connect( {async: false}, function (error) {
 				if(error) {
 					console.log("CONNECTION error: " + error);
 					return;
@@ -265,7 +265,7 @@ function loginUser(token, loginFunction, socket)
 	});
 }
 
-exports.addUser = checkUser;
+exports.addUser = addUser;
 exports.loginSocket = loginSocket;
 exports.loginUser = loginUser;
 exports.logout = logout;
