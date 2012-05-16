@@ -378,9 +378,7 @@ function drawLine(e){
 	
 	mouseInHex(ratx,raty);
 	dotxy();
-	
-	var str = 'X = ' + ratx + ' Y = ' + raty;
-	document.getElementById('click_coords').innerHTML = str;		
+			
 	
 	var g=document.getElementById("dots_game");
 	var width=document.getElementById("dots_game").width;
