@@ -204,3 +204,8 @@ header .subtext
 	text-transform: uppercase;
 	color: #ee0000;
 }
+
+.clearer
+{
+	clear: both;
+}
