@@ -53,7 +53,7 @@ function sendSingleMessage(socket, msgName, msgContent) {
 	
 function login(socket, callback) {
 	socket.on('auth', function (token) {
-		if(token.token == undefined)
+		if(token.token == undefined || token.token == '')
 		{
 			socket.emit('ok', {'error': 'No token...'});
 			console.log('UNDEFINED TOKEN...');

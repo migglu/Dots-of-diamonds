@@ -209,3 +209,19 @@ header .subtext
 {
 	clear: both;
 }
+
+#popup
+{
+	display: none;
+	border: 1px solid red;
+	border-radius: 7px;
+	margin-top: 8px;
+	background-color: #fcc;
+}
+
+#popup p 
+{
+	text-align: center;
+	padding: 5px;
+	margin: 0;
+}

@@ -172,9 +172,10 @@ function field(size){
 	bo.stroke();
 	bo.closePath();
 	
-	p1=new Player('#00FF00');
+	p1=new Player('#00ee00');
 	p2=new Player('#FF0000');
-	bo.lineWidth=3;
+	bo.lineWidth=1;
+	
 	return hex_counter,p1,p2;
 }
 

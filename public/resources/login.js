@@ -24,3 +24,15 @@ if(getCookie('Dots-of-Diamonds'))
 {
 	window.location = '/chat';
 }
+
+var popupTimer;
+
+function hidePopup() {
+	document.getElementById('popup').style.display = 'none';
+}
+
+login.on('loginError', function() {
+	clearTimeout( popupTimer );
+	document.getElementById('popup').style.display = 'block';
+	popupTimer = setTimeout( hidePopup, 4000 );
+});

@@ -18,19 +18,6 @@ function checkRegisterQuery(user, mail, pass, response, request, callback)
 	callback(user, mail, pass, response, request);
 }
 
-function checkLoginQuery(user, pass, response, request, callback)
-{
-	if(user === undefined || pass === undefined 
-		|| user.length < MIN_USERNAME_LENGTH
-		|| user.length > MAX_USERNAME_LENGTH)
-	{
-		console.log("Trying to login falsely.. exiting!");
-		//TODO return somekind of errro
-		return;
-	}
-	callback(user, pass, response, request);
-}
-
 function register(response, request)
 {
 	if (request.method == 'GET')
@@ -41,18 +28,6 @@ function register(response, request)
 		var pass = urlParts.query["reg[pass]"];
 		
 		checkRegisterQuery(user, mail, pass, response, request, db.addUser);
-	}
-}
-
-function login(response, request)
-{
-	if (request.method == 'GET')
-	{
-		var urlParts = url.parse(request.url, true);
-		var user = urlParts.query["reg[user]"];
-		var pass = urlParts.query["reg[pass]"];
-		
-		checkLoginQuery(user, pass, response, request, db.login);
 	}
 }
 

@@ -42,7 +42,7 @@ function setGlobalMessageListener(socket)
 		} else {
 			socket.get('token', function (err, token) {
 				socket.get('userId', function(err1, id) {
-					if (msg.token != token || err || err1) {
+					if ((msg.token != token) || err || err1) {
 						safeLogout(socket, token, id);
 					} else {
 						if(msg.msg.trim() != '')

@@ -3,11 +3,10 @@ var db = require('./database');
 
 var waitingGames = {}; // token => {game, date}
 
-function addGameListeners(socket, game) {
+function addGameListeners(socket) {
 	socket.on('move', function (data) {
 		if(data.x != undefined && data.y != undefined && data.line != undefined) {
-			console.log( data );
-			game.playTurn(socket, data);
+			socket.game.playTurn(socket, data);
 		}
 	});
 }
@@ -20,10 +19,6 @@ var everyRomboidPossible = [ [ 0, 5 ], [ 0, 1], [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 
 function checkIfLinesExist( move1, move2, mask1, mask2, object ) {
 	var lines1 = this.getHexLines( move1.x, move1.y );
 	var lines2 = this.getHexLines( move2.x, move2.y );
-	console.log( 'lines1 = ' + lines1 );
-	console.log( 'lines2 = ' + lines2 );
-	console.log( 'mask1 = ' + mask1 );
-	console.log( 'mask2 = ' + mask2 );
 	if( ( (lines1 & mask1) == mask1 ) && ( (lines2 & mask2) == mask2 ) )
 	{
 		object.incrementScore();
@@ -48,8 +43,8 @@ function checkIfScored( move, object ) {
 		
 		if( move2.x < 0 ) { move2.x = 5; }
 		if( move2.x > 5 ) { move2.x = 0; }
-		if( move2.y < 0 ) { move2.x = 5; }
-		if( move2.y > 5 ) { move2.x = 0; }
+		if( move2.y < 0 ) { move2.y = 5; }
+		if( move2.y > 5 ) { move2.y = 0; }
 		
 		this.checkIfLinesExist( move1, move2, pairs[ currentPossibleRomboid ][ 0 ], pairs[ currentPossibleRomboid ][ 1 ], object );
 	}
@@ -84,10 +79,10 @@ function Game() {
 	this.end = false;
 	this.winner = null;
 	this.turns = [];
+	this.connected = 0;
 }
 
 function incrementScore() {
-	console.log( 'incrementing the SCOREZZZZZZZ' );
 	this.anotherTurn = true;
 	this.turn.score++;
 }
@@ -99,7 +94,6 @@ function sendMove(move) {
 
 function playTurn(player, turn) {
 	if(this.turn.socket == player) {
-		console.log( turn );
 		if( this.getLine( turn.x, turn.y, turn.line ) != 0 ) {
 			return;
 		}
@@ -143,11 +137,9 @@ function initialize() {
 	db.initGame(this.p1UserId, this.p2UserId, a);
 }
 
-function beginGame() {
-	console.log( 'Commencing game!' );
-	
-	addGameListeners(this.player1.socket, this);
-	addGameListeners(this.player2.socket, this);
+function beginGame() {	
+	addGameListeners(this.player1.socket);
+	addGameListeners(this.player2.socket);
 	
 	sendGameStart(this.player1.socket);
 	sendGameStart(this.player2.socket);
@@ -162,7 +154,9 @@ function setId(id) {
 }
 
 function startTimer() {
-	console.log( 'Swithing the turrrrrrrnzzzzzzzzzzzzzz' );
+	console.log( 'p1 disconnected: ' + this.player1.socket.disconnected );
+	console.log( 'p2 disconnected: ' + this.player2.socket.disconnected );
+	console.log( 'Switching the turrrrrrrnzzzzzzzzzzzzzz' );
 	sendTurn(this.turn.socket);
 	sendWait(this.waiting.socket);
 	var a = function (e) { e.nextTurn() };
@@ -171,6 +165,19 @@ function startTimer() {
 
 function endTimer() {
 	clearTimeout(this.timer);
+}
+
+function endGame() {
+	if( this.player1.socket != null) {
+		sendGameEnd( this.player1.socket );
+	}
+	if( this.player2.socket != null) {
+		sendGameEnd( this.player2.socket );
+	}
+	
+	console.log( 'p1id = ' + this.p1UserId );
+	console.log( 'p2id = ' + this.p2UserId );
+	db.endGame( this.p1UserId, this.p2UserId );
 }
 
 function nextTurn() {
@@ -182,9 +189,7 @@ function nextTurn() {
 		}
 		this.startTimer();
 	} else {
-		//TODO endgame
-		sendGameEnd( this.player1.socket );
-		sendGameEnd( this.player2.socket );
+		this.endgame();
 	}
 }
 
@@ -192,6 +197,15 @@ function switchTurn() {
 	var oldTurn = this.turn;
 	this.turn = this.waiting;
 	this.waiting = oldTurn;
+}
+
+function disconnectPlayer( socket ) {
+	this.connected--;
+	if( this.connected == 0 )
+	{
+		this.endTimer();
+		this.endGame();
+	}
 }
 
 function connectPlayer(socket, number) {
@@ -208,6 +222,7 @@ function connectPlayer(socket, number) {
 			return;
 		}
 	}
+	this.connected++;
 	
 	if( this.player1.socket != null && this.player2.socket != null )
 	{
@@ -216,6 +231,10 @@ function connectPlayer(socket, number) {
 		sendQueueing(socket);
 	}
 	
+}
+
+function destroy() {
+	this.endTimer();
 }
 
 function sendQueueing( socket ) {
@@ -267,12 +286,19 @@ Game.prototype.getHexLines = getHexLines;
 Game.prototype.checkIfScored = checkIfScored;
 Game.prototype.checkIfLinesExist = checkIfLinesExist;
 Game.prototype.incrementScore = incrementScore;
+Game.prototype.destroy = destroy;
+Game.prototype.disconnectPlayer = disconnectPlayer;
+Game.prototype.endGame = endGame;
 
 function gameAuthListener( socket ) {
 	var token = socket.store.data.token;
 	console.log( 'token = ' + token );
 	if( token != undefined && waitingGames[ token ] != undefined ) {
+		socket.game = waitingGames[ token ].game;
 		waitingGames[ token ].game.connectPlayer( socket );
+		socket.on('disconnect', function() {
+			socket.game.disconnectPlayer();
+		});
 	} else {
 		sendToChat( socket );
 	}
@@ -290,7 +316,6 @@ function setLoggedIn( name, id, token, socket ) {
 
 function addGame( socket, game, date ) {
 	waitingGames[ socket.store.data.token ] = { 'game':game, 'date': date };
-	console.log( waitingGames );
 }
 
 

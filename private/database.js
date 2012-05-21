@@ -17,10 +17,7 @@ function initGame(id1, id2, callback)
 			return;
 		}
 		
-		this.query()
-		.update('dd_users')
-		.set({'ingame': 1})
-		.where('id = ? OR id = ?', [id1, id2])
+		this.query().update('dd_users').set({'ingame': 1}).where('id = ? OR id = ?', [id1, id2])
 		.execute(function (err, res) {
 			if(err)
 			{
@@ -29,8 +26,7 @@ function initGame(id1, id2, callback)
 			}
 		});
 		
-		this.query()
-		.insert('dd_games', ['', id1, id2, '', new Date()])
+		this.query().insert('dd_games', ['', id1, id2, '', new Date()])
 		.execute(function (err, res) {
 			if(err) {
 				console.log('Game initialization error...');
@@ -49,10 +45,7 @@ function inGame( socket, callbackOnOk, callbackOnError ) {
 			return;
 		}
 		console.log( socket );
-		this.query()
-		.select( 'ingame' )
-		.from( 'dd_users' )
-		.where( 'id = ?', [ socket.store.data.userid ] )
+		this.query().select( 'ingame' ).from( 'dd_users' ).where( 'id = ?', [ socket.store.data.userid ] )
 		.execute( function( error, rows, cols ) {
 			
 			if( error ) {
@@ -89,10 +82,7 @@ function resetLoggedIn()
 			return;
 		}
 		
-		this.query()
-		.update('dd_users')
-		.set({'loggedin': 0, 'ingame': 0})
-		.where('1 = 1')
+		this.query().update('dd_users').set({'loggedin': 0, 'ingame': 0}).where('1 = 1')
 		.execute(function (error, result) {
 			if(error) {
 				console.log("RESET error: " + error);
@@ -109,10 +99,7 @@ function logout(token) {
 			return;
 		}
 		
-		this.query()
-		.update('dd_users')
-		.set({'loggedin': 0})
-		.where('token = ?', [token])
+		this.query().update('dd_users').set({'loggedin': 0}).where('token = ?', [token])
 		.execute(function (error, result) {
 			if(error) {
 				console.log("LOGOUT error: " + error);
@@ -129,8 +116,7 @@ function registerUser(user, mail, pass, response, request) {
 			console.log("CONNECTION error: " + error);
 			return;
 		}
-		this.query()
-		.insert('dd_users', ['', user, mail, pass, '', 0, 0]) //FIXME: token?!
+		this.query().insert('dd_users', ['', user, mail, pass, '', 0, 0]) //FIXME: token?!
 		.execute(function(error, result) {
 			if(error)
 			{
@@ -153,10 +139,7 @@ function addUser(user, mail, pass, response, request)
 		}
 		
 		
-		this.query()
-		.select('COUNT(*) AS `size`')
-		.from('dd_users')
-		.where('name = ? OR mail = ?', [user, mail])
+		this.query().select('COUNT(*) AS `size`').from('dd_users').where('name = ? OR mail = ?', [user, mail])
 		.execute(function(error, rows, cols) {
 			if(error)
 			{
@@ -185,10 +168,7 @@ function loginSocket(user, pass, socket, duplicateCallback)
 			return;
 		}
 		
-		this.query()
-		.select('id, pass, token, loggedin')
-		.from('dd_users')
-		.where('name = ? AND pass = ?', [user, pass])
+		this.query().select('id, pass, token, loggedin').from('dd_users').where('name = ? AND pass = ?', [user, pass])
 		.execute(function (error, rows, cols)
 		{
 			if (error) {
@@ -197,6 +177,7 @@ function loginSocket(user, pass, socket, duplicateCallback)
 			}
 			if(rows[0] == undefined)
 			{
+				socket.emit('loginError', {} );
 				return;
 			}
 			
@@ -205,9 +186,8 @@ function loginSocket(user, pass, socket, duplicateCallback)
 				duplicateCallback(rows[0].token, rows[0].id);
 			}
 			var token = rows[0].id + '' + rows[0].pass + '' + new Date().toString();
-			console.log(token);
 			
-			var hash = crypto.createHash('sha256'); //BLOCKIIIIIIIIIIIIIIING, FIX AT ALL COST!
+			var hash = crypto.createHash('sha256');
 			hash.update(token);
 			token = hash.digest('hex');
 			
@@ -217,10 +197,7 @@ function loginSocket(user, pass, socket, duplicateCallback)
 					return;
 				}
 				
-				this.query()
-				.update('dd_users')
-				.set({'token': token, 'loggedin': 1})
-				.where('id = ?', [rows[0].id])
+				this.query().update('dd_users').set({'token': token, 'loggedin': 1}).where('id = ?', [rows[0].id])
 				.execute(function (error, result) {
 					if(error) {
 						console.log("UPDATE error: " + error);
@@ -265,6 +242,23 @@ function loginUser(token, loginFunction, socket)
 	});
 }
 
+function endGame( id1, id2 ) {
+	
+	db.connect(function(error) {
+		if (error) {
+			console.log("CONNECTION error: " + error);
+			return;
+		}
+		
+		this.query().update('dd_users').set({'ingame': 0}).where('id = ? OR id = ?', [ id1, id2 ])
+		.execute(function (error, result) {
+			if(error) {
+				console.log("RESET error: " + error);
+			}
+		});
+	});
+}
+
 exports.addUser = addUser;
 exports.loginSocket = loginSocket;
 exports.loginUser = loginUser;
@@ -272,3 +266,4 @@ exports.logout = logout;
 exports.resetLoggedIn = resetLoggedIn;
 exports.initGame = initGame;
 exports.inGame = inGame;
+exports.endGame = endGame;
