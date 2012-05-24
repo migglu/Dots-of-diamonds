@@ -56,16 +56,21 @@ function setGlobalMessageListener(socket)
 	});
 	
 	socket.on('logout', function(msg) {
+		console.log( 'logging out:' );
+		console.log( msg );
 		socket.get('token', function (err, token) {
 			if(err)
 			{
 				console.log("logout error..");
 				return;
 			}
-			
-			if(token != msg.token) {
+			console.log( 'token = ' + token );
+			console.log( 'msg.token = ' + msg.token );
+			if(token == msg.token) {
 				socket.get('userid', function (err, id) {
 					if(!err) {
+						console.log( 'token = ' + token );
+						console.log( 'id = ' + id );
 						logoutAll(token, id);
 					}
 				});

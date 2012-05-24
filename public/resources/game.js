@@ -48,6 +48,7 @@ gameSocket.on('connect', function () {
 		gameSocket.on('ok', function (data) {
 			if( data != undefined && data.error != undefined && data.error == 0) {
 				addGameListeners();
+				addGameChatListener( gameSocket );
 			}
 		});
 	}

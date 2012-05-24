@@ -3,6 +3,16 @@ var db = require('./database');
 
 var waitingGames = {}; // token => {game, date}
 
+function addChatListener( socket, gameObject ) {
+	socket.on('message', function( data ) {
+		if( data != undefined && data.msg != undefined ) {
+			data.user = socket.store.data.name;
+			io.sendSingleMessage( gameObject.player1.socket, 'message', data );
+			io.sendSingleMessage( gameObject.player2.socket, 'message', data );
+		}
+	});
+}
+
 function addGameListeners(socket) {
 	socket.on('move', function (data) {
 		if(data.x != undefined && data.y != undefined && data.line != undefined) {
@@ -140,6 +150,9 @@ function initialize() {
 function beginGame() {	
 	addGameListeners(this.player1.socket);
 	addGameListeners(this.player2.socket);
+	
+	addChatListener( this.player1.socket, this);
+	addChatListener( this.player2.socket, this);
 	
 	sendGameStart(this.player1.socket);
 	sendGameStart(this.player2.socket);
@@ -307,9 +320,10 @@ function gameAuthListener( socket ) {
 function setLoggedIn( name, id, token, socket ) {
 	socket.set('token', token, function() {
 		socket.set('userid', id, function() {
-			console.log( 'id = ' + id );
-			socket.emit('ok', {'error': 0});
-			gameAuthListener( socket );
+			socket.set('name', name, function() {
+				socket.emit('ok', {'error': 0});
+				gameAuthListener( socket );
+			});
 		});
 	});
 }

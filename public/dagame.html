@@ -3,8 +3,10 @@
 		<meta charset="utf-8">
 		<title>Dots of Diamonds - Game</title>
 		<link rel="shortcut icon"  href="favicon.png">
+		<link rel="stylesheet" href="resources/style.css" />
 		<script src="socket.io/socket.io.js"></script>
 		<script src="/resources/cookies.js"></script>
+		<script src="/resources/gamechat.js"></script>
 		<script charset="utf-8" src="/resources/game.js"></script>
 	</head>
  	<body>
@@ -13,6 +15,11 @@
 		<span id="turn" ></span><br />
  		<canvas id="dots_game" height="450" width="600">
  		</canvas>
+ 		<div id="chats" style="float: right;">
+			<div id="game_chat" ></div>
+			<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
+ 		</div>
+ 		<div class="clearer"></div>
 		<div id="coords" >X =  Y = </div>
  		
  		<script>

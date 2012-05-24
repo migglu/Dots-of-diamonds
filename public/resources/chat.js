@@ -100,7 +100,6 @@ function emit(field) {
 	} else {
 		emitPrivate(field, conversationId);
 	}
-	console.log('Emitting a message!');
 }
 
 function clearField(field) {
