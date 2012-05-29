@@ -2,9 +2,10 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>Dots of Diamods - Chat</title>
+		<title>Dots of Diamods - Чат</title>
 		<link rel="shortcut icon"  href="favicon.png">
 		<link rel="stylesheet" href="resources/style.css" />
+		<meta http-equiv="cache-control" content="no-cache"/>
 		<script src="/resources/cookies.js"></script>
 		<script src="socket.io/socket.io.js"></script>
 		<script src="/resources/authenticate.js"></script>
@@ -18,10 +19,10 @@
 			<div id="public" onclick="setConversationTo(-1);">Общ</div>
 			<div id="users"></div>
 			<div id="chatControls">
-				<input type="button" id="logout" value="Logout" onclick="logout();" ></input>
+				<input type="button" id="Изход" class="smaller" value="Изход" onclick="logout();" ></input>
 				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this, conversationId)"></input>
-				<input type="button" value="send" onclick="emit(document.getElementById('message'));" ></input>
-				<input type="button" value="newgame" onclick="startGame();" ></input>
+				<input type="button" value="Изпрати" class="smaller" onclick="emit(document.getElementById('message'));" ></input>
+				<input type="button" value="Покани" onclick="startGame();" ></input>
 			</div>
 		</div>
 		<script src="/resources/chat.js"></script>

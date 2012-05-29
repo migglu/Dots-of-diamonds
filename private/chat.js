@@ -55,22 +55,35 @@ function setGlobalMessageListener(socket)
 		}
 	});
 	
+	socket.on('singleLogout', function( msg ) {
+		console.log( 'single logout!' );
+		socket.get( 'token', function( err, token ) {
+			if( err ) {
+				console.log( 'single logout error while getting token...' );
+				return;
+			}
+			socket.get( 'userid', function( err, id ) {
+				if( err ) {
+					console.log( 'single logout error while getting id...' );
+					return;
+				}
+				if( token == msg.token ) {
+					safeLogout( socket, token, id );
+				}
+			});
+		});
+	});
+	
 	socket.on('logout', function(msg) {
-		console.log( 'logging out:' );
-		console.log( msg );
 		socket.get('token', function (err, token) {
 			if(err)
 			{
 				console.log("logout error..");
 				return;
 			}
-			console.log( 'token = ' + token );
-			console.log( 'msg.token = ' + msg.token );
 			if(token == msg.token) {
 				socket.get('userid', function (err, id) {
 					if(!err) {
-						console.log( 'token = ' + token );
-						console.log( 'id = ' + id );
 						logoutAll(token, id);
 					}
 				});
@@ -90,6 +103,11 @@ function setGlobalMessageListener(socket)
 				{
 					console.log('logout error.. ');
 				}
+				console.log( 'safe logout: ' );
+				console.log( 'token = ' + token );
+				console.log( 'id = ' + id );
+				console.log( 'socket:' );
+				console.log( socket );
 				safeLogout(socket, token, id);
 			});
 		});
@@ -138,10 +156,11 @@ function safeLogout(socket, token, id)
 function logout(socket, token, id, name) {
 	var index = loggedInByName[name].indexOf(socket);
 	
-	delete loggedInByName[name][index];
+	loggedInByName[name].splice( index, 1 );
 	
 	index = loggedInById[id].indexOf(socket);
-	delete loggedInById[id][index];
+	
+	loggedInById[id].splice( index, 1 );
 	
 	if(loggedInByName[name].length == 0)
 	{

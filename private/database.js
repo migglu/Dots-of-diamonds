@@ -9,8 +9,20 @@ var statics = require('./statics');
 var crypto = require('crypto');
 var io = require('./socket');
 
+function noUndefinedArguments( argumentList )
+{
+	for( index in argumentList )
+	{
+		if( argumentList[ index ] == undefined )
+		{
+			throw new Error('cannot make query with undefined parameters');
+		}
+	}
+}
+
 function initGame(id1, id2, callback)
 {
+	noUndefinedArguments( arguments );
 	db.connect(function (err) {
 		if(err) {
 			console.log('CONNECTION error: ' + err);
@@ -39,12 +51,13 @@ function initGame(id1, id2, callback)
 }
 
 function inGame( socket, callbackOnOk, callbackOnError ) {
+	noUndefinedArguments( [socket, socket.store, socket.store.data, socket.store.data.userid, callbackOnOk] );
 	db.connect( function( error ) {
 		if( error ) {
 			console.log("CONNECTION error: " + error);
 			return;
 		}
-		console.log( socket );
+		
 		this.query().select( 'ingame' ).from( 'dd_users' ).where( 'id = ?', [ socket.store.data.userid ] )
 		.execute( function( error, rows, cols ) {
 			
@@ -62,7 +75,7 @@ function inGame( socket, callbackOnOk, callbackOnError ) {
 			}
 			if( rows[0].ingame == 1) {
 				if(callbackOnError != undefined ) {
-					callbackOnError( socket );
+					callbackOnError();
 					console.log( 'Already in game :(' );
 				}
 				return;
@@ -109,7 +122,26 @@ function logout(token) {
 	});
 }
 
+function deleteUser( username ) {
+	db.connect(function(error)
+	{
+		if (error) {
+			console.log("CONNECTION error: " + error);
+			return;
+		}
+		
+		this.query("DELETE FROM dd_users WHERE name = ?", [username])
+		.execute( function( error, result ) {
+			if( error ) {
+				console.log( 'Delete error: ' + error );
+				return;
+			}
+		});
+	});
+}
+
 function registerUser(user, mail, pass, response, request) {
+	noUndefinedArguments( arguments );
 	db.connect(function(error)
 	{
 		if (error) {
@@ -267,3 +299,4 @@ exports.resetLoggedIn = resetLoggedIn;
 exports.initGame = initGame;
 exports.inGame = inGame;
 exports.endGame = endGame;
+exports.deleteUser = deleteUser;

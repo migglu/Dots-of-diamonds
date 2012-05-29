@@ -27,13 +27,18 @@ input
 	border-style: solid;
 	border-width: 1px;
 	border-radius: 7px;
-	padding-left: 10px;
 	margin-bottom: 8px;
+}
+
+input[type="text"], input[type="password"], input[type="email"]
+{
+	padding-left: 10px;
 }
 
 input.smaller
 {
 	width: auto;
+	padding: 0 10px;
 }
 
 input:last-child
@@ -78,11 +83,10 @@ input:hover
 
 #chats
 {
-	width: auto;
 	float: left;
 	width: 540px;
 	height: 440px;
-	margin-left: 30px;
+	border: 2px dotted red;
 }
 
 .chatbox
@@ -242,6 +246,11 @@ header .subtext
 	border-radius: 7px;
 	margin: 0;
 	padding: 10px;
+}
+
+#game_chat_wrapper
+{
+	border: 1px dotted red;
 }
 
 input[type="text"], input[type="password"], textarea, select

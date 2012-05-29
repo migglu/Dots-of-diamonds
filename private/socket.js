@@ -9,7 +9,6 @@ function broadcastLoggedIn(loggedIn) {
 
 function broadcastToChat(message)
 {
-	//console.log(io.of('/chat'));
 	io.of('/chat').volatile.emit('publicMessage', message); // TODO: custom broadcast, only to logged in users
 }
 
@@ -48,7 +47,10 @@ function setupGame() {
 }
 
 function sendSingleMessage(socket, msgName, msgContent) {
-	socket.emit(msgName, msgContent);
+	if( socket != undefined )
+	{
+		socket.emit(msgName, msgContent);
+	}
 }
 	
 function login(socket, callback) {

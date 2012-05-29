@@ -7,6 +7,7 @@ function addChatListener( socket, gameObject ) {
 	socket.on('message', function( data ) {
 		if( data != undefined && data.msg != undefined ) {
 			data.user = socket.store.data.name;
+			
 			io.sendSingleMessage( gameObject.player1.socket, 'message', data );
 			io.sendSingleMessage( gameObject.player2.socket, 'message', data );
 		}

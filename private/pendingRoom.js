@@ -39,7 +39,9 @@ function sendInvite( sender, reciever ) {
 		}
 	}
 	var ffail = function () {
-		var id = sender.store.data.userid;
+		var id = reciever.store.data.userid;
+		console.log( 'reciever id = ' + id );
+		console.log( 'reciever socket ' + reciever );
 		inGame( sender, id );
 	}
 	db.inGame( reciever, fok, ffail );

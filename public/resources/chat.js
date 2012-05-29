@@ -19,6 +19,7 @@ function addGameInviteListeners() {
 	});
 	
 	chat.on( 'inGame', function (data) {
+		console.log( data );
 		if( data != undefined ) {
 			if( data.id != undefined ) {
 				if( chats[ data.id ] != undefined ) {
@@ -43,8 +44,14 @@ function addGameInviteListeners() {
 		{
 			if( data.id != undefined )
 			{
-				//TODO display accepted message (optional)
-				window.location = '/game';
+				var token = getCookie('Dots-of-Diamonds');
+				if( token == '' ) {
+					window.location = '/index';
+				} else {
+					chat.emit( 'singleLogout', {'token': token } );
+					//TODO display accepted message (optional)
+					window.location = '/game';
+				}
 			}
 		}
 	});
@@ -77,7 +84,7 @@ function getUsername( id ) {
 }
 
 function writeInGameMessage( field, id ) {
-	field.innerHTML += getUsername( id ) + ' е в текуща игра.</ br>';
+	field.innerHTML += getUsername( id ) + ' е в текуща игра.<br />';
 	scrollToBottom( field ); 
 }
 

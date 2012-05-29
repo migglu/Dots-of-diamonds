@@ -2,6 +2,11 @@ var http = require("http");
 var url = require("url");
 var io = require("./socket");
 
+function createServer( onRequest )
+{
+	return http.createServer( onRequest );
+}
+
 function start(route, handle) {
 	function onRequest(request, response) {
 		var pathname = url.parse(request.url).pathname;
@@ -9,7 +14,7 @@ function start(route, handle) {
 		route(handle, pathname, response, request);
 	}
 	
-	var server = http.createServer(onRequest);
+	var server = createServer( onRequest );
 	io.connect(server);
 	
 	server.listen(3000);
@@ -18,3 +23,4 @@ function start(route, handle) {
 }
 
 exports.start = start;
+exports.createServer = createServer;

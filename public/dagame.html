@@ -4,23 +4,26 @@
 		<title>Dots of Diamonds - Game</title>
 		<link rel="shortcut icon"  href="favicon.png">
 		<link rel="stylesheet" href="resources/style.css" />
+		<meta http-equiv="cache-control" content="no-cache"/>
 		<script src="socket.io/socket.io.js"></script>
 		<script src="/resources/cookies.js"></script>
 		<script src="/resources/gamechat.js"></script>
 		<script charset="utf-8" src="/resources/game.js"></script>
 	</head>
  	<body>
-		<div id="message" ></div>
-		<span id="timer" ></span>
-		<span id="turn" ></span><br />
- 		<canvas id="dots_game" height="450" width="600">
- 		</canvas>
- 		<div id="chats" style="float: right;">
-			<div id="game_chat" ></div>
-			<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
- 		</div>
- 		<div class="clearer"></div>
-		<div id="coords" >X =  Y = </div>
+		<article >
+			<div id="message" ></div>
+			<span id="timer" ></span>
+			<span id="turn" ></span><br />
+			<canvas id="dots_game" height="450" width="600">
+			</canvas>
+			<div id="game_chat_wrapper" >
+				<div id="game_chat" ></div>
+				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
+			</div>
+			<div class="clearer"></div>
+			<div id="coords" >X =  Y = </div>
+		</article>
  		
  		<script>
  			document.getElementById('dots_game').addEventListener('mousedown', getAndSendMove );
