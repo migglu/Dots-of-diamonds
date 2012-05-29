@@ -12,19 +12,27 @@
 	</head>
 	
 	<body>
-		<div id="wrapper">
-			<div id="chats" >
-				<div class="chatbox" id="chat" ></div>
+		<header> <img src="resources/header.png" /> <span class="subtext">Beta</span>
+		</header>
+		<article>
+			<div id="wrapper">
+				<div id="chats" >
+					<div class="chatbox" id="chat" ></div>
+				</div>
+				<div id="logged_in_users">
+					<div id="public" onclick="setConversationTo(-1);">Общ</div>
+					<div class="clearer" ></div>
+					<div id="users"></div>
+					<div class="clearer" ></div>
+				</div>
+				<div id="chatControls">
+					<input type="button" id="Изход" class="smaller" value="Изход" onclick="logout();" ></input>
+					<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this, conversationId)"></input>
+					<input type="button" value="Изпрати" class="smaller" onclick="emit(document.getElementById('message'));" ></input>
+					<input type="button" value="Покани" class="smaller" onclick="startGame();" ></input>
+				</div>
 			</div>
-			<div id="public" onclick="setConversationTo(-1);">Общ</div>
-			<div id="users"></div>
-			<div id="chatControls">
-				<input type="button" id="Изход" class="smaller" value="Изход" onclick="logout();" ></input>
-				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this, conversationId)"></input>
-				<input type="button" value="Изпрати" class="smaller" onclick="emit(document.getElementById('message'));" ></input>
-				<input type="button" value="Покани" onclick="startGame();" ></input>
-			</div>
-		</div>
+		</article>
 		<script src="/resources/chat.js"></script>
 
 	</body>

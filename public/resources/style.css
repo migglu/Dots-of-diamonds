@@ -132,8 +132,9 @@ input:hover
 	float: left;
 	background-color: #eee;
 	border-radius: 7px;
-	padding: 10px;
+	padding: 5px;
 	margin: 10px;
+	overflow: auto;
 }
 
 #chatControls 
@@ -145,6 +146,7 @@ input:hover
 #wrapper
 {
 	width: 750px;
+	margin: 0 auto;
 }
 
 .reg_cont .clear
@@ -303,4 +305,10 @@ input:focus
 	text-align: center;
 	float: left;
 	width: auto;
+}
+
+#logged_in_users
+{
+	float: left;
+	margin-left: -10px;
 }
