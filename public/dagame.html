@@ -12,14 +12,29 @@
 	</head>
  	<body>
 		<article >
-			<div id="message" ></div>
-			<span id="timer" ></span>
-			<span id="turn" ></span><br />
+			<div id="messages-wrapper">
+				<div class="left">
+					<div id="myName"></div>
+					<div id="myScore"></div>
+				</div>
+				<div class="center">
+					<div id="message" ></div>
+					<span id="timer" ></span>
+					<span id="turn" ></span><br />
+				</div>
+				<div class="right">
+					<div id="opponentName"></div>
+					<div id="opponentScore"></div>
+				</div>
+				<div class="clearer"></div>
+			</div>
+			
 			<canvas id="dots_game" height="450" width="600">
 			</canvas>
+			
 			<div id="game_chat_wrapper" >
 				<div id="game_chat" ></div>
-				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)"></input>
+				<input type="text" id="message" onkeypress="if (event.keyCode == 13) emit(this)" />
 			</div>
 			<div class="clearer"></div>
 			<div id="coords" >X =  Y = </div>

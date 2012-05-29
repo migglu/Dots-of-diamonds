@@ -5,6 +5,7 @@ var TURN_TIME = 15;
 var turnClock = null;
 var clock = 0;
 var turn;
+var myId = 0, myName = '', opponentName = '';
 
 function startClock( time ) {
 	clock = time;
@@ -58,6 +59,17 @@ function sendMove( move ) {
 	gameSocket.emit( 'move', move );
 }
 
+function displayScore( p1score, p2score )
+{
+	document.getElementById( 'myScore' ).innerHTML = p1score;
+	document.getElementById( 'opponentScore' ).innerHTML = p2score;
+}
+
+function displayNames() {
+	document.getElementById( 'myName' ).innerHTML = myName;
+	document.getElementById( 'opponentName' ).innerHTML = opponentName;
+}
+
 var gameListenersAdded = false;
 function addGameListeners() {
 	if( gameListenersAdded )
@@ -103,15 +115,31 @@ function addGameListeners() {
 			}
 		}
 	});
+	gameSocket.on( 'score', function ( data ) {
+		if( myId == 'p1' ) {
+			displayScore( data.p1, data.p2 );
+		} else if( myId == 'p2' ) {
+			displayScore( data.p2, data.p1 );
+		}
+		
+	}); 
 	gameSocket.on( 'back', function () {
 		window.location = '/chat';
+	});
+	gameSocket.on( 'identifier', function( data ) {
+		console.log( 'data reciever: ' );
+		console.log( data );
+		myId = 'p' + data.id;
+		myName = data.name1;
+		opponentName = data.name2;
+		displayNames();
+		displayScore( 0, 0 );
 	});
 	
 	gameListenersAdded = true;
 }
 
 function getAndSendMove(e) {
-	console.log( e );
 	if( e != undefined && e.button != undefined && e.button == 0 ) 
 	{
 		getMouseXY(e);
@@ -119,6 +147,10 @@ function getAndSendMove(e) {
 		var move = whereInHex( ratx, raty );
 		if( move.line != -1 && move.x != -1 && move.y != -1 && turn == 1)
 		{
+			if( move.x < 0 || move.x > 5 || move.y < 0 || move.y > 5 || move.line < 1 || move.line > 6 )
+			{
+				return;
+			}
 			sendMove( move );
 			stopClock();
 		}

@@ -73,6 +73,13 @@ function getHexLines( x, y ) {
 	return this.lines[ x ][ y ];
 }
 
+function sendGameScore() {
+	var score = { 'p1': this.player1.score, 'p2': this.player2.score,
+					'p1id': this.player1.id, 'p2id': this.player2.id };
+	sendScore( this.player1.socket, score );
+	sendScore( this.player2.socket, score );
+}
+
 function Game() {
 	this.size = 6;
 	this.linesLeft = this.size*this.size*6;
@@ -93,9 +100,20 @@ function Game() {
 	this.connected = 0;
 }
 
+function sendIdentifiers() {
+	var p1name = this.player1.socket.store.data.name;
+	var p2name = this.player2.socket.store.data.name;
+	var identifier = {'id':this.player1.id, 'name1': p1name,
+						'name2': p2name };
+	io.sendSingleMessage( this.player1.socket, 'identifier', identifier );
+	identifier = {'id':this.player2.id, 'name1': p2name,
+						'name2': p1name };
+	io.sendSingleMessage( this.player2.socket, 'identifier', identifier );
+}
+
 function incrementScore() {
 	this.anotherTurn = true;
-	this.turn.score++;
+	(this.turn.score)++;
 }
 
 function sendMove(move) {
@@ -105,6 +123,10 @@ function sendMove(move) {
 
 function playTurn(player, turn) {
 	if(this.turn.socket == player) {
+		if( turn.x > 5 || turn.x < 0 || turn.y > 5 || turn.y < 0 || turn.line < 1 || turn > 6 )
+		{
+			return;
+		}
 		if( this.getLine( turn.x, turn.y, turn.line ) != 0 ) {
 			return;
 		}
@@ -142,18 +164,19 @@ function initialize() {
 		}
 	}
 	var game = this;
-	var a = function ( id ) {
+	var callback = function ( id ) {
 		game.setIdAndBeginGame( id );
 	}
-	db.initGame(this.p1UserId, this.p2UserId, a);
+	db.initGame(this.p1UserId, this.p2UserId, callback);
 }
 
-function beginGame() {	
+function beginGame() {
 	addGameListeners(this.player1.socket);
 	addGameListeners(this.player2.socket);
 	
 	addChatListener( this.player1.socket, this);
 	addChatListener( this.player2.socket, this);
+	this.sendIdentifiers();	
 	
 	sendGameStart(this.player1.socket);
 	sendGameStart(this.player2.socket);
@@ -168,9 +191,6 @@ function setId(id) {
 }
 
 function startTimer() {
-	console.log( 'p1 disconnected: ' + this.player1.socket.disconnected );
-	console.log( 'p2 disconnected: ' + this.player2.socket.disconnected );
-	console.log( 'Switching the turrrrrrrnzzzzzzzzzzzzzz' );
 	sendTurn(this.turn.socket);
 	sendWait(this.waiting.socket);
 	var a = function (e) { e.nextTurn() };
@@ -195,6 +215,7 @@ function endGame() {
 }
 
 function nextTurn() {
+	this.sendGameScore();
 	if(!this.end) {
 		if( !this.anotherTurn ) {
 			this.switchTurn();
@@ -281,6 +302,11 @@ function sendToChat( socket )
 	io.sendSingleMessage( socket, 'back', {} );
 }
 
+function sendScore( socket, score )
+{
+	io.sendSingleMessage( socket, 'score', score );
+}
+
 
 
 Game.prototype.initialize = initialize;
@@ -303,6 +329,8 @@ Game.prototype.incrementScore = incrementScore;
 Game.prototype.destroy = destroy;
 Game.prototype.disconnectPlayer = disconnectPlayer;
 Game.prototype.endGame = endGame;
+Game.prototype.sendGameScore = sendGameScore;
+Game.prototype.sendIdentifiers = sendIdentifiers;
 
 function gameAuthListener( socket ) {
 	var token = socket.store.data.token;
