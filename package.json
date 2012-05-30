@@ -1,0 +1,12 @@
+{  
+  "name": "Dots-of-Diamonds",  
+  "version": "0.0.1",  
+  "dependencies" : {  
+  	"db-mysql" : "0.7.6",
+  	"node-static" : "0.5.9", 
+    "socket.io" : "0.9.6"
+  },  
+  "engine": {  
+    "node": ">=0.6"  
+  }  
+}
